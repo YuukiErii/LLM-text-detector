@@ -14,16 +14,12 @@ from tqdm import tqdm
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
-DEFAULT_INPUT_PATH = PROJECT_ROOT / "data" / "processed" / "rewrite_prompts_deepseek.jsonl"
-DEFAULT_OUTPUT_PATH = PROJECT_ROOT / "data" / "processed" / "llm_rewrite_deepseek.jsonl"
-DEFAULT_FAILED_PATH = PROJECT_ROOT / "data" / "processed" / "llm_rewrite_deepseek_failed.jsonl"
+DEFAULT_INPUT_PATH = PROJECT_ROOT / "data" / "processed" / "rewrite_prompts_doubao.jsonl"
+DEFAULT_OUTPUT_PATH = PROJECT_ROOT / "data" / "processed" / "llm_rewrite_doubao.jsonl"
+DEFAULT_FAILED_PATH = PROJECT_ROOT / "data" / "processed" / "llm_rewrite_doubao_failed.jsonl"
 
-DEFAULT_MODEL = "deepseek-v4-pro"
-# 如果 deepseek-v4-pro 不可用，可以命令行改成：
-# --model deepseek-chat
-# 或者：
-# --model deepseek-v4-flash
-
+DEFAULT_BASE_URL = "https://ark.cn-beijing.volces.com/api/v3"
+DEFAULT_MODEL_ID = "doubao-seed-2-0-pro-260215"
 
 SYSTEM_PROMPT = (
     "You are a careful English literary rewriting assistant. "
@@ -68,11 +64,9 @@ def load_finished_task_ids(path: Path) -> Set[str]:
 def clean_model_output(text: str) -> str:
     text = text.strip()
 
-    # 去掉常见包裹符号
     text = re.sub(r"^```(?:text|json|markdown)?\s*", "", text, flags=re.IGNORECASE)
     text = re.sub(r"\s*```$", "", text)
 
-    # 去掉模型偶尔输出的说明性前缀
     prefixes = [
         "Here is the rewritten passage:",
         "Here is the rewrite:",
@@ -80,16 +74,16 @@ def clean_model_output(text: str) -> str:
         "Rewrite:",
         "Paraphrased passage:",
         "Modernized passage:",
+        "The rewritten passage is:",
+        "Below is the rewritten passage:",
     ]
 
     for prefix in prefixes:
         if text.lower().startswith(prefix.lower()):
             text = text[len(prefix):].strip()
 
-    # 如果模型加了引号包裹，谨慎去掉一层
-    if len(text) >= 2:
-        if (text[0] == text[-1]) and text[0] in ['"', "'"]:
-            text = text[1:-1].strip()
+    if len(text) >= 2 and text[0] == text[-1] and text[0] in ['"', "'"]:
+        text = text[1:-1].strip()
 
     return text
 
@@ -136,6 +130,7 @@ def basic_quality_check(source_text: str, rewrite_text: str) -> Dict:
         "i have rewritten",
         "as requested",
         "passage:",
+        "below is",
     ]
 
     if any(p in lower for p in bad_phrases):
@@ -151,9 +146,33 @@ def basic_quality_check(source_text: str, rewrite_text: str) -> Dict:
     }
 
 
-def call_deepseek(
+def extract_response_text(response) -> str:
+    """
+    Compatible with OpenAI-style Responses API.
+
+    Some SDK versions provide response.output_text directly.
+    If not, we fall back to parsing response.output.
+    """
+    if hasattr(response, "output_text") and response.output_text:
+        return response.output_text
+
+    texts = []
+
+    if hasattr(response, "output"):
+        for item in response.output:
+            content = getattr(item, "content", None)
+            if content:
+                for block in content:
+                    text = getattr(block, "text", None)
+                    if text:
+                        texts.append(text)
+
+    return "\n".join(texts).strip()
+
+
+def call_doubao_responses(
     client: OpenAI,
-    model: str,
+    model_id: str,
     prompt: str,
     temperature: float,
     top_p: float,
@@ -163,23 +182,38 @@ def call_deepseek(
 ) -> str:
     last_error: Optional[Exception] = None
 
+    full_input = [
+        {
+            "role": "system",
+            "content": [
+                {
+                    "type": "input_text",
+                    "text": SYSTEM_PROMPT,
+                }
+            ],
+        },
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "input_text",
+                    "text": prompt,
+                }
+            ],
+        },
+    ]
+
     for attempt in range(max_retries):
         try:
-            response = client.chat.completions.create(
-                model=model,
-                messages=[
-                    {"role": "system", "content": SYSTEM_PROMPT},
-                    {"role": "user", "content": prompt},
-                ],
+            response = client.responses.create(
+                model=model_id,
+                input=full_input,
                 temperature=temperature,
                 top_p=top_p,
-                max_tokens=max_tokens,
-                stream=False,
-                # 文本改写任务不需要 thinking mode
-                extra_body={"thinking": {"type": "disabled"}},
+                max_output_tokens=max_tokens,
             )
 
-            return response.choices[0].message.content or ""
+            return extract_response_text(response)
 
         except Exception as e:
             last_error = e
@@ -188,21 +222,21 @@ def call_deepseek(
             print(f"Sleeping {wait_time:.2f} seconds...")
             time.sleep(wait_time)
 
-    raise RuntimeError(f"DeepSeek request failed after {max_retries} retries: {last_error}")
+    raise RuntimeError(f"Doubao request failed after {max_retries} retries: {last_error}")
 
 
-def build_output_item(task: Dict, rewrite_text: str, model: str, quality: Dict) -> Dict:
+def build_output_item(task: Dict, rewrite_text: str, model_id: str, quality: Dict) -> Dict:
     return {
-        "id": task["task_id"].replace("rewrite_", "llm_deepseek_"),
+        "id": task["task_id"].replace("rewrite_", "llm_doubao_"),
         "task_id": task["task_id"],
         "source_id": task["source_id"],
         "pair_id": task["pair_id"],
         "text": rewrite_text,
         "label": 1,
         "domain": task.get("domain", "literature"),
-        "source": "deepseek",
-        "generator": "deepseek",
-        "model": model,
+        "source": "doubao",
+        "generator": "doubao",
+        "model": model_id,
         "prompt_type": task.get("prompt_type", "unknown"),
         "generation": "llm_rewrite",
         "source_text": task.get("source_text", ""),
@@ -211,7 +245,9 @@ def build_output_item(task: Dict, rewrite_text: str, model: str, quality: Dict) 
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Generate DeepSeek rewrites for LLM text detection dataset.")
+    parser = argparse.ArgumentParser(
+        description="Generate Doubao rewrites using Volcengine Ark Responses API."
+    )
 
     parser.add_argument(
         "--input",
@@ -237,8 +273,15 @@ def parse_args():
     parser.add_argument(
         "--model",
         type=str,
-        default=DEFAULT_MODEL,
-        help="DeepSeek model name, e.g. deepseek-v4-pro, deepseek-v4-flash, or deepseek-chat.",
+        default=None,
+        help="Doubao model ID. If omitted, use DOUBAO_MODEL_ID from .env.",
+    )
+
+    parser.add_argument(
+        "--base_url",
+        type=str,
+        default=DEFAULT_BASE_URL,
+        help="Volcengine Ark OpenAI-compatible base URL.",
     )
 
     parser.add_argument(
@@ -252,42 +295,36 @@ def parse_args():
         "--temperature",
         type=float,
         default=0.7,
-        help="Sampling temperature.",
     )
 
     parser.add_argument(
         "--top_p",
         type=float,
         default=0.9,
-        help="Nucleus sampling top_p.",
     )
 
     parser.add_argument(
         "--max_tokens",
         type=int,
         default=650,
-        help="Maximum output tokens.",
     )
 
     parser.add_argument(
         "--sleep",
         type=float,
         default=0.5,
-        help="Sleep seconds between successful requests.",
     )
 
     parser.add_argument(
         "--max_retries",
         type=int,
         default=5,
-        help="Maximum retries per request.",
     )
 
     parser.add_argument(
         "--sleep_base",
         type=float,
         default=2.0,
-        help="Base sleep seconds for exponential backoff.",
     )
 
     return parser.parse_args()
@@ -298,13 +335,15 @@ def main():
 
     load_dotenv(PROJECT_ROOT / ".env")
 
-    api_key = os.getenv("DEEPSEEK_API_KEY")
+    api_key = os.getenv("ARK_API_KEY")
     if not api_key:
         raise ValueError(
-            "DEEPSEEK_API_KEY is not set. "
-            "Please create a .env file in the project root and add:\n"
-            "DEEPSEEK_API_KEY=your_api_key"
+            "ARK_API_KEY is not set. "
+            "Please add it to .env:\n"
+            "ARK_API_KEY=your_api_key"
         )
+
+    model_id = args.model or os.getenv("DOUBAO_MODEL_ID") or DEFAULT_MODEL_ID
 
     input_path = Path(args.input)
     output_path = Path(args.output)
@@ -314,8 +353,8 @@ def main():
         raise FileNotFoundError(f"Cannot find input file: {input_path}")
 
     client = OpenAI(
+        base_url=args.base_url,
         api_key=api_key,
-        base_url="https://api.deepseek.com",
     )
 
     tasks = load_jsonl(input_path)
@@ -330,12 +369,13 @@ def main():
         remaining_tasks = remaining_tasks[:args.limit]
 
     print("=" * 70)
-    print("DeepSeek Rewrite Generation")
+    print("Doubao Rewrite Generation via Responses API")
     print("=" * 70)
     print(f"Input path: {input_path}")
     print(f"Output path: {output_path}")
     print(f"Failed path: {failed_path}")
-    print(f"Model: {args.model}")
+    print(f"Base URL: {args.base_url}")
+    print(f"Model ID: {model_id}")
     print(f"Total tasks in input: {len(tasks)}")
     print(f"Already finished: {len(finished_task_ids)}")
     print(f"Tasks to process this run: {len(remaining_tasks)}")
@@ -349,9 +389,9 @@ def main():
             source_text = task.get("source_text", "")
             prompt = task["prompt"]
 
-            raw_output = call_deepseek(
+            raw_output = call_doubao_responses(
                 client=client,
-                model=args.model,
+                model_id=model_id,
                 prompt=prompt,
                 temperature=args.temperature,
                 top_p=args.top_p,
@@ -366,7 +406,7 @@ def main():
             output_item = build_output_item(
                 task=task,
                 rewrite_text=rewrite_text,
-                model=args.model,
+                model_id=model_id,
                 quality=quality,
             )
 
@@ -380,8 +420,8 @@ def main():
                 "task_id": task.get("task_id"),
                 "source_id": task.get("source_id"),
                 "pair_id": task.get("pair_id"),
-                "generator": "deepseek",
-                "model": args.model,
+                "generator": "doubao",
+                "model": model_id,
                 "error": str(e),
             }
             append_jsonl(failed_item, failed_path)

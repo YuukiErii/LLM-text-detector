@@ -1,0 +1,138 @@
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# PyCharm
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+
+# =========================
+# System files
+# =========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================
+# Jupyter Notebook
+# =========================
+.ipynb_checkpoints/
+
+# =========================
+# Logs
+# =========================
+*.log
+logs/
+wandb/
+runs/
+mlruns/
+
+# =========================
+# Environment files
+# =========================
+.env
+.env.*
+*.env
+
+# =========================
+# Data files
+# =========================
+data/raw/
+data/processed/
+data/external/
+data/interim/
+data/metadata/
+
+# Keep folder structure
+!data/
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/metadata/.gitkeep
+
+# =========================
+# Model checkpoints and outputs
+# =========================
+outputs/
+checkpoints/
+models/
+saved_models/
+*.ckpt
+*.pt
+*.pth
+*.bin
+*.safetensors
+
+# Keep output folder structure
+!outputs/
+!outputs/models/.gitkeep
+!outputs/predictions/.gitkeep
+!outputs/figures/.gitkeep
+
+# =========================
+# Hugging Face / Transformers cache
+# =========================
+.cache/
+huggingface/
+hf_cache/
+transformers_cache/
+
+# =========================
+# Generated prediction files
+# =========================
+*.csv
+*.tsv
+*.jsonl
+predictions/
+submission/
+
+# =========================
+# Exception: allow config/example files
+# =========================
+!requirements.txt
+!README.md
+!*.md
+!config/
+!config/*.yaml
+!config/*.yml
+!config/*.json
+!examples/
+!examples/*.json
+!examples/*.jsonl
+!examples/*.csv
+
+# =========================
+# Test / coverage
+# =========================
+.pytest_cache/
+.coverage
+htmlcov/
+
+# =========================
+# Build files
+# =========================
+build/
+dist/
+*.egg-info/
+.eggs/
+
+
+.idea/
+.venv/
+data/raw/
+data/processed/
+outputs/
+.env
