@@ -1,11 +1,10 @@
-# =========================
-# Python
-# =========================
+# Python bytecode and caches
 __pycache__/
 *.py[cod]
 *$py.class
-*.so
-.Python
+.pytest_cache/
+.coverage
+htmlcov/
 
 # Virtual environments
 .venv/
@@ -13,126 +12,64 @@ venv/
 env/
 ENV/
 
-# PyCharm
+# IDE and OS files
 .idea/
-*.iml
-
-# VS Code
 .vscode/
-
-# =========================
-# System files
-# =========================
+*.iml
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# =========================
-# Jupyter Notebook
-# =========================
-.ipynb_checkpoints/
-
-# =========================
-# Logs
-# =========================
-*.log
-logs/
-wandb/
-runs/
-mlruns/
-
-# =========================
-# Environment files
-# =========================
+# Local secrets and environment files
 .env
 .env.*
 *.env
 
-# =========================
-# Data files
-# =========================
-data/raw/
-data/processed/
-data/external/
-data/interim/
-data/metadata/
-
-# Keep folder structure
-!data/
+# Local data artifacts
+data/raw/*
+data/processed/*
+data/interim/*
+data/external/*
+data/metadata/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
+!data/interim/.gitkeep
+!data/external/.gitkeep
 !data/metadata/.gitkeep
 
-# =========================
-# Model checkpoints and outputs
-# =========================
-outputs/
+# Generated model, prediction, and experiment outputs
+outputs/*
 checkpoints/
-models/
 saved_models/
+runs/
+wandb/
+mlruns/
+logs/
+*.log
+*.err.log
+*.pid
+
+# Large ML artifacts
 *.ckpt
 *.pt
 *.pth
 *.bin
 *.safetensors
+*.onnx
+*.pkl
+*.joblib
 
-# Keep output folder structure
-!outputs/
-!outputs/models/.gitkeep
-!outputs/predictions/.gitkeep
-!outputs/figures/.gitkeep
-
-# =========================
-# Hugging Face / Transformers cache
-# =========================
+# Hugging Face / Transformers caches
 .cache/
 huggingface/
 hf_cache/
 transformers_cache/
 
-# =========================
-# Generated prediction files
-# =========================
-*.csv
-*.tsv
-*.jsonl
-predictions/
-submission/
-
-# =========================
-# Exception: allow config/example files
-# =========================
-!requirements.txt
-!README.md
-!*.md
-!config/
-!config/*.yaml
-!config/*.yml
-!config/*.json
-!examples/
-!examples/*.json
-!examples/*.jsonl
-!examples/*.csv
-
-# =========================
-# Test / coverage
-# =========================
-.pytest_cache/
-.coverage
-htmlcov/
-
-# =========================
-# Build files
-# =========================
+# Build and packaging outputs
 build/
 dist/
 *.egg-info/
 .eggs/
 
-
-.idea/
-.venv/
-data/raw/
-data/processed/
-outputs/
-.env
+# Local notebooks/checkpoints
+.ipynb_checkpoints/

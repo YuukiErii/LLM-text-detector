@@ -19,50 +19,89 @@ DEFAULT_OUTPUT_PATH = PROJECT_ROOT / "data" / "processed" / "llm_rewrite_chatgpt
 DEFAULT_FAILED_PATH = PROJECT_ROOT / "data" / "processed" / "llm_rewrite_chatgpt_failed.jsonl"
 
 DEFAULT_BASE_URL = "https://api.gptsapi.net"
-DEFAULT_MODEL = "gpt-5.4"
+DEFAULT_MODEL = "gpt-5.4-mini"
 
 SYSTEM_PROMPT = (
-    "You are a careful English literary rewriting assistant. "
-    "Your task is to rewrite the user's passage while preserving its meaning, "
-    "scene, narrative perspective, tone, and approximate length. "
+    "You are a careful English rewriting assistant. "
+    "Rewrite the user's passage while preserving its meaning, domain, tone, terminology, "
+    "claims, examples, narrative or argument structure, and approximate length. "
+    "Use different wording and sentence structures. "
+    "Do not summarize, omit details, or add new information. "
     "Return only the rewritten passage. Do not add explanations, titles, bullets, or comments."
 )
 
 
 def load_jsonl(path: Path) -> List[Dict]:
     samples = []
+
     with open(path, "r", encoding="utf-8") as f:
-        for line in f:
-            if line.strip():
+        for line_id, line in enumerate(f, start=1):
+            line = line.strip()
+            if not line:
+                continue
+
+            try:
                 samples.append(json.loads(line))
+            except json.JSONDecodeError as e:
+                print(f"[Warning] Failed to parse line {line_id} in {path}: {e}")
+
     return samples
 
 
 def append_jsonl(item: Dict, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
+
     with open(path, "a", encoding="utf-8") as f:
         f.write(json.dumps(item, ensure_ascii=False) + "\n")
 
 
 def load_finished_task_ids(path: Path) -> Set[str]:
+    """
+    Only treat a task as finished if:
+    1. task_id exists
+    2. text is non-empty
+    3. quality.passed_basic_quality_check is True
+
+    This prevents old empty / low-quality outputs from being skipped.
+    """
     if not path.exists():
         return set()
 
     finished = set()
+
     with open(path, "r", encoding="utf-8") as f:
-        for line in f:
-            if line.strip():
-                try:
-                    item = json.loads(line)
-                    if "task_id" in item:
-                        finished.add(item["task_id"])
-                except json.JSONDecodeError:
-                    continue
+        for line_id, line in enumerate(f, start=1):
+            line = line.strip()
+            if not line:
+                continue
+
+            try:
+                item = json.loads(line)
+            except json.JSONDecodeError:
+                print(f"[Warning] Failed to parse finished output line {line_id}")
+                continue
+
+            task_id = item.get("task_id")
+            text = item.get("text", "")
+            quality = item.get("quality", {})
+
+            if (
+                task_id
+                and isinstance(text, str)
+                and text.strip()
+                and isinstance(quality, dict)
+                and quality.get("passed_basic_quality_check", False)
+            ):
+                finished.add(task_id)
+
     return finished
 
 
 def clean_model_output(text: str) -> str:
-    text = text.strip()
+    if text is None:
+        return ""
+
+    text = str(text).strip()
 
     text = re.sub(r"^```(?:text|json|markdown)?\s*", "", text, flags=re.IGNORECASE)
     text = re.sub(r"\s*```$", "", text)
@@ -76,6 +115,14 @@ def clean_model_output(text: str) -> str:
         "Modernized passage:",
         "The rewritten passage is:",
         "Below is the rewritten passage:",
+        "Here is the paraphrased passage:",
+        "Here is a rewritten version:",
+        "Sure, here is the rewritten passage:",
+        "Certainly, here is the rewritten passage:",
+        "Of course, here is the rewritten passage:",
+        "Here is the rewritten paragraph:",
+        "Rewritten paragraph:",
+        "Paraphrased paragraph:",
     ]
 
     for prefix in prefixes:
@@ -102,7 +149,82 @@ def lexical_jaccard(a: str, b: str) -> float:
     return len(tokens_a & tokens_b) / len(tokens_a | tokens_b)
 
 
-def basic_quality_check(source_text: str, rewrite_text: str) -> Dict:
+def starts_with_meta_text(text: str) -> bool:
+    """
+    Only detect meta text at the beginning of the output.
+
+    Important:
+    Academic paragraphs may naturally contain words such as "paragraph",
+    "passage", "below", or "as requested" inside the body. We should not
+    fail them unless the model starts with assistant-style meta text.
+    """
+    lower = text.strip().lower()
+
+    bad_prefixes = [
+        "here is the rewritten passage",
+        "here is the rewrite",
+        "here is the rewritten paragraph",
+        "rewritten passage:",
+        "rewritten paragraph:",
+        "paraphrased passage:",
+        "paraphrased paragraph:",
+        "modernized passage:",
+        "the rewritten passage is:",
+        "below is",
+        "certainly!",
+        "sure,",
+        "of course,",
+        "as requested,",
+        "i have rewritten",
+    ]
+
+    return any(lower.startswith(prefix) for prefix in bad_prefixes)
+
+
+def looks_truncated(text: str) -> bool:
+    text = text.strip()
+
+    if not text:
+        return True
+
+    valid_endings = (".", "?", "!", ")", "]", '"', "'", "”", "’")
+
+    return text[-1] not in valid_endings
+
+
+def get_quality_thresholds(domain: str) -> Dict:
+    """
+    Domain-aware quality thresholds.
+
+    Literature:
+        A high lexical overlap usually means the model copied too much.
+    Academic:
+        High lexical overlap is more acceptable because terminology, citations,
+        dataset names, model names, and technical phrases should be preserved.
+    """
+    domain = (domain or "").lower()
+
+    if domain == "academic":
+        return {
+            "min_abs_words": 20,
+            "min_length_ratio": 0.50,
+            "max_length_ratio": 2.00,
+            "max_jaccard": 0.92,
+            "fail_on_truncated": True,
+        }
+
+    return {
+        "min_abs_words": 20,
+        "min_length_ratio": 0.45,
+        "max_length_ratio": 2.00,
+        "max_jaccard": 0.82,
+        "fail_on_truncated": False,
+    }
+
+
+def basic_quality_check(source_text: str, rewrite_text: str, domain: str = "literature") -> Dict:
+    thresholds = get_quality_thresholds(domain)
+
     source_words = word_count(source_text)
     rewrite_words = word_count(rewrite_text)
 
@@ -111,36 +233,34 @@ def basic_quality_check(source_text: str, rewrite_text: str) -> Dict:
 
     issues = []
 
-    if rewrite_words < 20:
+    if not rewrite_text.strip():
+        issues.append("empty_output")
+
+    if rewrite_words < thresholds["min_abs_words"]:
         issues.append("too_short_absolute")
 
-    if length_ratio < 0.45:
+    if length_ratio < thresholds["min_length_ratio"]:
         issues.append("too_short_relative")
 
-    if length_ratio > 2.0:
+    if length_ratio > thresholds["max_length_ratio"]:
         issues.append("too_long_relative")
 
-    if jaccard > 0.82:
+    if jaccard > thresholds["max_jaccard"]:
         issues.append("too_similar_to_source")
 
-    lower = rewrite_text.lower()
-    bad_phrases = [
-        "here is the rewritten passage",
-        "here is the rewrite",
-        "i have rewritten",
-        "as requested",
-        "passage:",
-        "below is",
-    ]
+    if thresholds["fail_on_truncated"] and looks_truncated(rewrite_text):
+        issues.append("possibly_truncated")
 
-    if any(p in lower for p in bad_phrases):
+    if starts_with_meta_text(rewrite_text):
         issues.append("contains_meta_text")
 
     return {
+        "domain": domain,
         "source_word_count": source_words,
         "rewrite_word_count": rewrite_words,
         "length_ratio": round(length_ratio, 4),
         "lexical_jaccard": round(jaccard, 4),
+        "quality_thresholds": thresholds,
         "quality_issues": issues,
         "passed_basic_quality_check": len(issues) == 0,
     }
@@ -155,7 +275,7 @@ def call_chatgpt(
     max_tokens: int,
     max_retries: int,
     sleep_base: float,
-) -> str:
+) -> Dict:
     last_error: Optional[Exception] = None
 
     for attempt in range(max_retries):
@@ -172,7 +292,29 @@ def call_chatgpt(
                 stream=False,
             )
 
-            return response.choices[0].message.content or ""
+            if not response.choices:
+                return {
+                    "content": "",
+                    "finish_reason": "no_choices",
+                    "usage": None,
+                }
+
+            choice = response.choices[0]
+            content = choice.message.content or ""
+            finish_reason = getattr(choice, "finish_reason", None)
+
+            usage = None
+            if hasattr(response, "usage") and response.usage is not None:
+                try:
+                    usage = response.usage.model_dump()
+                except Exception:
+                    usage = str(response.usage)
+
+            return {
+                "content": content,
+                "finish_reason": finish_reason,
+                "usage": usage,
+            }
 
         except Exception as e:
             last_error = e
@@ -184,7 +326,14 @@ def call_chatgpt(
     raise RuntimeError(f"ChatGPT request failed after {max_retries} retries: {last_error}")
 
 
-def build_output_item(task: Dict, rewrite_text: str, model: str, quality: Dict) -> Dict:
+def build_output_item(
+    task: Dict,
+    rewrite_text: str,
+    model: str,
+    quality: Dict,
+    finish_reason: Optional[str],
+    usage,
+) -> Dict:
     return {
         "id": task["task_id"].replace("rewrite_", "llm_chatgpt_"),
         "task_id": task["task_id"],
@@ -200,6 +349,8 @@ def build_output_item(task: Dict, rewrite_text: str, model: str, quality: Dict) 
         "generation": "llm_rewrite",
         "source_text": task.get("source_text", ""),
         "quality": quality,
+        "finish_reason": finish_reason,
+        "usage": usage,
     }
 
 
@@ -212,12 +363,43 @@ def parse_args():
     parser.add_argument("--base_url", type=str, default=DEFAULT_BASE_URL)
     parser.add_argument("--model", type=str, default=None)
     parser.add_argument("--limit", type=int, default=50)
-    parser.add_argument("--temperature", type=float, default=0.7)
-    parser.add_argument("--top_p", type=float, default=0.9)
-    parser.add_argument("--max_tokens", type=int, default=650)
-    parser.add_argument("--sleep", type=float, default=0.5)
+
+    parser.add_argument(
+        "--temperature",
+        type=float,
+        default=0.7,
+        help="Recommended: 0.7 for ChatGPT rewrites.",
+    )
+
+    parser.add_argument(
+        "--top_p",
+        type=float,
+        default=0.9,
+        help="Recommended: 0.9.",
+    )
+
+    parser.add_argument(
+        "--max_tokens",
+        type=int,
+        default=1200,
+        help="Recommended: 1000 for literature, 1200 for academic.",
+    )
+
+    parser.add_argument("--sleep", type=float, default=0.3)
     parser.add_argument("--max_retries", type=int, default=5)
     parser.add_argument("--sleep_base", type=float, default=2.0)
+
+    parser.add_argument(
+        "--allow_low_quality",
+        action="store_true",
+        help="If set, write low-quality generations to output instead of failed file.",
+    )
+
+    parser.add_argument(
+        "--allow_length_finish",
+        action="store_true",
+        help="If set, do not automatically fail finish_reason='length'.",
+    )
 
     return parser.parse_args()
 
@@ -231,7 +413,7 @@ def main():
     if not api_key:
         raise ValueError(
             "GPTSAPI_API_KEY is not set. Please add it to .env:\n"
-            "GPTSAPI_API_KEY=sk-xxxx"
+            "GPTSAPI_API_KEY=your_gptsapi_api_key"
         )
 
     model = args.model or os.getenv("CHATGPT_MODEL") or DEFAULT_MODEL
@@ -267,20 +449,33 @@ def main():
     print(f"Failed path: {failed_path}")
     print(f"Base URL: {args.base_url}")
     print(f"Model: {model}")
+    print(f"Temperature: {args.temperature}")
+    print(f"Top-p: {args.top_p}")
+    print(f"Max tokens: {args.max_tokens}")
+    print(f"Sleep: {args.sleep}")
+    print(f"Allow low quality: {args.allow_low_quality}")
+    print(f"Allow finish_reason=length: {args.allow_length_finish}")
     print(f"Total tasks in input: {len(tasks)}")
-    print(f"Already finished: {len(finished_task_ids)}")
+    print(f"Already finished valid tasks: {len(finished_task_ids)}")
     print(f"Tasks to process this run: {len(remaining_tasks)}")
     print("=" * 70)
 
     success_count = 0
     failed_count = 0
+    quality_failed_count = 0
+    truncated_count = 0
 
     for task in tqdm(remaining_tasks, desc="Generating ChatGPT rewrites"):
+        finish_reason = None
+        usage = None
+        raw_output = ""
+
         try:
             source_text = task.get("source_text", "")
             prompt = task["prompt"]
+            domain = task.get("domain", "literature")
 
-            raw_output = call_chatgpt(
+            result = call_chatgpt(
                 client=client,
                 model=model,
                 prompt=prompt,
@@ -291,18 +486,73 @@ def main():
                 sleep_base=args.sleep_base,
             )
 
+            raw_output = result.get("content", "")
+            finish_reason = result.get("finish_reason")
+            usage = result.get("usage")
+
             rewrite_text = clean_model_output(raw_output)
-            quality = basic_quality_check(source_text, rewrite_text)
+
+            quality = basic_quality_check(
+                source_text=source_text,
+                rewrite_text=rewrite_text,
+                domain=domain,
+            )
 
             output_item = build_output_item(
                 task=task,
                 rewrite_text=rewrite_text,
                 model=model,
                 quality=quality,
+                finish_reason=finish_reason,
+                usage=usage,
             )
 
-            append_jsonl(output_item, output_path)
-            success_count += 1
+            if not rewrite_text.strip():
+                raise ValueError("Empty rewrite_text extracted from API response.")
+
+            if finish_reason == "length" and not args.allow_length_finish:
+                truncated_count += 1
+                failed_item = {
+                    "task_id": task.get("task_id"),
+                    "source_id": task.get("source_id"),
+                    "pair_id": task.get("pair_id"),
+                    "generator": "chatgpt",
+                    "model": model,
+                    "error": (
+                        f"Generation truncated because finish_reason=length. "
+                        f"Try increasing max_tokens. Current max_tokens={args.max_tokens}"
+                    ),
+                    "finish_reason": finish_reason,
+                    "usage": usage,
+                    "source_text": source_text,
+                    "raw_output": raw_output,
+                    "rewrite_text": rewrite_text,
+                    "quality": quality,
+                }
+                append_jsonl(failed_item, failed_path)
+
+            elif not args.allow_low_quality and not quality["passed_basic_quality_check"]:
+                quality_failed_count += 1
+                failed_item = {
+                    "task_id": task.get("task_id"),
+                    "source_id": task.get("source_id"),
+                    "pair_id": task.get("pair_id"),
+                    "generator": "chatgpt",
+                    "model": model,
+                    "error": f"Quality check failed: {quality}",
+                    "finish_reason": finish_reason,
+                    "usage": usage,
+                    "source_text": source_text,
+                    "raw_output": raw_output,
+                    "rewrite_text": rewrite_text,
+                    "quality": quality,
+                }
+                append_jsonl(failed_item, failed_path)
+
+            else:
+                append_jsonl(output_item, output_path)
+                success_count += 1
+
             time.sleep(args.sleep)
 
         except Exception as e:
@@ -313,6 +563,10 @@ def main():
                 "generator": "chatgpt",
                 "model": model,
                 "error": str(e),
+                "finish_reason": finish_reason,
+                "usage": usage,
+                "raw_output": raw_output,
+                "source_text": task.get("source_text", ""),
             }
             append_jsonl(failed_item, failed_path)
             failed_count += 1
@@ -320,8 +574,10 @@ def main():
     print("\n" + "=" * 70)
     print("Generation finished")
     print("=" * 70)
-    print(f"Success: {success_count}")
-    print(f"Failed: {failed_count}")
+    print(f"Success written to output: {success_count}")
+    print(f"Request / extraction failed: {failed_count}")
+    print(f"Quality failed: {quality_failed_count}")
+    print(f"Truncated finish_reason=length: {truncated_count}")
     print(f"Output saved to: {output_path}")
     print(f"Failures saved to: {failed_path}")
 

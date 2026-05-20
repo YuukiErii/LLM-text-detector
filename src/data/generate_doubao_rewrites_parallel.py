@@ -3,9 +3,11 @@ import json
 import os
 import random
 import re
+import threading
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Optional, Set, Tuple
 
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -28,6 +30,8 @@ SYSTEM_PROMPT = (
     "Return only the rewritten passage. Do not add explanations, titles, bullets, or comments."
 )
 
+write_lock = threading.Lock()
+
 
 def load_jsonl(path: Path) -> List[Dict]:
     samples = []
@@ -46,11 +50,12 @@ def load_jsonl(path: Path) -> List[Dict]:
     return samples
 
 
-def append_jsonl(item: Dict, path: Path) -> None:
+def append_jsonl_threadsafe(item: Dict, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
 
-    with open(path, "a", encoding="utf-8") as f:
-        f.write(json.dumps(item, ensure_ascii=False) + "\n")
+    with write_lock:
+        with open(path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(item, ensure_ascii=False) + "\n")
 
 
 def load_finished_task_ids(path: Path) -> Set[str]:
@@ -99,7 +104,6 @@ def clean_model_output(text: str) -> str:
 
     text = str(text).strip()
 
-    # Remove markdown fences
     text = re.sub(r"^```(?:text|json|markdown)?\s*", "", text, flags=re.IGNORECASE)
     text = re.sub(r"\s*```$", "", text)
 
@@ -122,7 +126,6 @@ def clean_model_output(text: str) -> str:
         if text.lower().startswith(prefix.lower()):
             text = text[len(prefix):].strip()
 
-    # Remove one layer of surrounding quotes if the whole answer is quoted
     if len(text) >= 2 and text[0] == text[-1] and text[0] in ['"', "'"]:
         text = text[1:-1].strip()
 
@@ -209,7 +212,7 @@ def response_to_dict(response):
 
 
 def dump_response_for_debug(response, task_id: str, output_dir: Path) -> None:
-    debug_dir = output_dir / "debug_doubao_chat_completions"
+    debug_dir = output_dir / "debug_doubao_chat_completions_parallel"
     debug_dir.mkdir(parents=True, exist_ok=True)
 
     debug_path = debug_dir / f"{task_id}.json"
@@ -274,7 +277,7 @@ def call_doubao_chat_completions(
         except Exception as e:
             last_error = e
             wait_time = sleep_base * (2 ** attempt) + random.uniform(0, 1.0)
-            print(f"\nRequest failed. Attempt {attempt + 1}/{max_retries}. Error: {e}")
+            print(f"\nRequest failed for {task_id}. Attempt {attempt + 1}/{max_retries}. Error: {e}")
             print(f"Sleeping {wait_time:.2f} seconds...")
             time.sleep(wait_time)
 
@@ -300,9 +303,105 @@ def build_output_item(task: Dict, rewrite_text: str, model_id: str, quality: Dic
     }
 
 
+def process_one_task(
+    task: Dict,
+    client: OpenAI,
+    model_id: str,
+    output_path: Path,
+    failed_path: Path,
+    temperature: float,
+    top_p: float,
+    max_tokens: int,
+    max_retries: int,
+    sleep_base: float,
+    sleep: float,
+    debug_response: bool,
+    strict_quality: bool,
+    debug_output_dir: Path,
+) -> Tuple[str, str]:
+    """
+    Returns:
+        ("success", task_id)
+        ("failed", task_id)
+        ("quality_failed", task_id)
+    """
+    task_id = task.get("task_id", "unknown_task")
+
+    try:
+        source_text = task.get("source_text", "")
+        prompt = task["prompt"]
+
+        raw_output = call_doubao_chat_completions(
+            client=client,
+            model_id=model_id,
+            prompt=prompt,
+            temperature=temperature,
+            top_p=top_p,
+            max_tokens=max_tokens,
+            max_retries=max_retries,
+            sleep_base=sleep_base,
+            debug_response=debug_response,
+            task_id=task_id,
+            debug_output_dir=debug_output_dir,
+        )
+
+        rewrite_text = clean_model_output(raw_output)
+        quality = basic_quality_check(source_text, rewrite_text)
+
+        if not rewrite_text.strip():
+            raise ValueError("Empty rewrite_text extracted from API response.")
+
+        output_item = build_output_item(
+            task=task,
+            rewrite_text=rewrite_text,
+            model_id=model_id,
+            quality=quality,
+        )
+
+        if strict_quality and not quality["passed_basic_quality_check"]:
+            failed_item = {
+                "task_id": task.get("task_id"),
+                "source_id": task.get("source_id"),
+                "pair_id": task.get("pair_id"),
+                "generator": "doubao",
+                "model": model_id,
+                "error": f"Quality check failed: {quality}",
+                "source_text": source_text,
+                "raw_output": raw_output,
+                "rewrite_text": rewrite_text,
+                "quality": quality,
+            }
+            append_jsonl_threadsafe(failed_item, failed_path)
+            return "quality_failed", task_id
+
+        append_jsonl_threadsafe(output_item, output_path)
+
+        if sleep > 0:
+            time.sleep(sleep)
+
+        return "success", task_id
+
+    except Exception as e:
+        failed_item = {
+            "task_id": task.get("task_id"),
+            "source_id": task.get("source_id"),
+            "pair_id": task.get("pair_id"),
+            "generator": "doubao",
+            "model": model_id,
+            "error": str(e),
+            "source_text": task.get("source_text", ""),
+        }
+        append_jsonl_threadsafe(failed_item, failed_path)
+
+        if sleep > 0:
+            time.sleep(sleep)
+
+        return "failed", task_id
+
+
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Generate Doubao rewrites using Volcengine Ark Chat Completions API."
+        description="Generate Doubao rewrites in parallel using Volcengine Ark Chat Completions API."
     )
 
     parser.add_argument(
@@ -348,6 +447,13 @@ def parse_args():
     )
 
     parser.add_argument(
+        "--workers",
+        type=int,
+        default=3,
+        help="Number of concurrent workers.",
+    )
+
+    parser.add_argument(
         "--temperature",
         type=float,
         default=0.7,
@@ -363,13 +469,13 @@ def parse_args():
         "--max_tokens",
         type=int,
         default=900,
-        help="Maximum output tokens for rewritten passage.",
     )
 
     parser.add_argument(
         "--sleep",
         type=float,
-        default=0.5,
+        default=0.1,
+        help="Sleep seconds after each request inside a worker.",
     )
 
     parser.add_argument(
@@ -387,7 +493,7 @@ def parse_args():
     parser.add_argument(
         "--debug_response",
         action="store_true",
-        help="Save raw API responses to outputs/debug_doubao_chat_completions.",
+        help="Save raw API responses to outputs/debug_doubao_chat_completions_parallel.",
     )
 
     parser.add_argument(
@@ -421,11 +527,6 @@ def main():
     if not input_path.exists():
         raise FileNotFoundError(f"Cannot find input file: {input_path}")
 
-    client = OpenAI(
-        base_url=args.base_url,
-        api_key=api_key,
-    )
-
     tasks = load_jsonl(input_path)
     finished_task_ids = load_finished_task_ids(output_path)
 
@@ -438,7 +539,7 @@ def main():
         remaining_tasks = remaining_tasks[:args.limit]
 
     print("=" * 70)
-    print("Doubao Rewrite Generation via Chat Completions API")
+    print("Doubao Rewrite Generation Parallel")
     print("=" * 70)
     print(f"Input path: {input_path}")
     print(f"Output path: {output_path}")
@@ -448,96 +549,68 @@ def main():
     print(f"Total tasks in input: {len(tasks)}")
     print(f"Already finished valid tasks: {len(finished_task_ids)}")
     print(f"Tasks to process this run: {len(remaining_tasks)}")
+    print(f"Workers: {args.workers}")
+    print(f"Sleep per task: {args.sleep}")
     print(f"Strict quality mode: {args.strict_quality}")
     print(f"Debug response: {args.debug_response}")
     print("=" * 70)
+
+    if not remaining_tasks:
+        print("No remaining tasks to process.")
+        return
+
+    client = OpenAI(
+        base_url=args.base_url,
+        api_key=api_key,
+    )
+
+    debug_output_dir = PROJECT_ROOT / "outputs"
 
     success_count = 0
     failed_count = 0
     quality_failed_count = 0
 
-    debug_output_dir = PROJECT_ROOT / "outputs"
-
-    for task in tqdm(remaining_tasks, desc="Generating Doubao rewrites"):
-        task_id = task.get("task_id", "unknown_task")
-
-        try:
-            source_text = task.get("source_text", "")
-            prompt = task["prompt"]
-
-            raw_output = call_doubao_chat_completions(
-                client=client,
-                model_id=model_id,
-                prompt=prompt,
-                temperature=args.temperature,
-                top_p=args.top_p,
-                max_tokens=args.max_tokens,
-                max_retries=args.max_retries,
-                sleep_base=args.sleep_base,
-                debug_response=args.debug_response,
-                task_id=task_id,
-                debug_output_dir=debug_output_dir,
+    with ThreadPoolExecutor(max_workers=args.workers) as executor:
+        futures = [
+            executor.submit(
+                process_one_task,
+                task,
+                client,
+                model_id,
+                output_path,
+                failed_path,
+                args.temperature,
+                args.top_p,
+                args.max_tokens,
+                args.max_retries,
+                args.sleep_base,
+                args.sleep,
+                args.debug_response,
+                args.strict_quality,
+                debug_output_dir,
             )
+            for task in remaining_tasks
+        ]
 
-            rewrite_text = clean_model_output(raw_output)
-            quality = basic_quality_check(source_text, rewrite_text)
+        for future in tqdm(as_completed(futures), total=len(futures), desc="Generating Doubao rewrites"):
+            status, task_id = future.result()
 
-            output_item = build_output_item(
-                task=task,
-                rewrite_text=rewrite_text,
-                model_id=model_id,
-                quality=quality,
-            )
-
-            if not rewrite_text.strip():
-                raise ValueError("Empty rewrite_text extracted from API response.")
-
-            if args.strict_quality and not quality["passed_basic_quality_check"]:
-                quality_failed_count += 1
-
-                failed_item = {
-                    "task_id": task.get("task_id"),
-                    "source_id": task.get("source_id"),
-                    "pair_id": task.get("pair_id"),
-                    "generator": "doubao",
-                    "model": model_id,
-                    "error": f"Quality check failed: {quality}",
-                    "source_text": source_text,
-                    "raw_output": raw_output,
-                    "rewrite_text": rewrite_text,
-                    "quality": quality,
-                }
-
-                append_jsonl(failed_item, failed_path)
-
-            else:
-                append_jsonl(output_item, output_path)
+            if status == "success":
                 success_count += 1
-
-            time.sleep(args.sleep)
-
-        except Exception as e:
-            failed_item = {
-                "task_id": task.get("task_id"),
-                "source_id": task.get("source_id"),
-                "pair_id": task.get("pair_id"),
-                "generator": "doubao",
-                "model": model_id,
-                "error": str(e),
-                "source_text": task.get("source_text", ""),
-            }
-            append_jsonl(failed_item, failed_path)
-            failed_count += 1
+            elif status == "quality_failed":
+                quality_failed_count += 1
+            else:
+                failed_count += 1
 
     print("\n" + "=" * 70)
-    print("Generation finished")
+    print("Parallel generation finished")
     print("=" * 70)
     print(f"Success written to output: {success_count}")
     print(f"Request / extraction failed: {failed_count}")
     print(f"Quality failed: {quality_failed_count}")
     print(f"Output saved to: {output_path}")
     print(f"Failures saved to: {failed_path}")
-    print(f"Debug responses saved under: {debug_output_dir / 'debug_doubao_chat_completions'}")
+    print(f"Debug responses saved under: {debug_output_dir / 'debug_doubao_chat_completions_parallel'}")
 
 
 if __name__ == "__main__":

@@ -1,1 +1,347 @@
+# LLM Text Detector
 
+Hybrid DeBERTa-TFIDF detector for an NLG course project. The task is to decide
+whether an English passage is human-written or generated / rewritten by an LLM.
+
+The project focuses on rewritten text rather than generic AI essay detection.
+The expected test distribution includes literary prose, archaic English, poetry,
+and NLP / computational linguistics academic paragraphs.
+
+## Task
+
+Input:
+
+```json
+{"text": "The passage to classify..."}
+```
+
+Output:
+
+```json
+{"label": 1, "probability": 0.83}
+```
+
+Labels:
+
+| Label | Meaning |
+| --- | --- |
+| `0` | Human-written text |
+| `1` | LLM-generated or LLM-rewritten text |
+
+## Model Plan
+
+The final detector is planned as a probability ensemble:
+
+```text
+P_final = alpha * P_deberta + (1 - alpha) * P_tfidf
+```
+
+Branches:
+
+| Branch | Role |
+| --- | --- |
+| DeBERTa-v3-base classifier | Captures semantic, discourse, and deep style signals |
+| Word/char TF-IDF + Logistic Regression | Captures lexical, punctuation, spelling, and surface style signals |
+
+TF-IDF, DeBERTa, and the probability ensemble training entrypoints are present.
+Training artifacts are intentionally not committed.
+
+## Current Status
+
+Current processed data includes:
+
+| Artifact | Status |
+| --- | --- |
+| `data/processed/human_seed.jsonl` | Literature human seed, 7130 samples |
+| `data/processed/academic_seed.jsonl` | Academic human seed, 1200 samples |
+| `data/processed/poetry_seed.jsonl` | Poetry human seed, 500 samples |
+| `data/processed/human_seed_combined.jsonl` | Combined human seed, 8830 samples |
+| `data/processed/rewrite_prompts.jsonl` | Literature rewrite prompts, 7130 tasks |
+| `data/processed/rewrite_prompts_academic.jsonl` | Academic rewrite prompts, 1098 tasks |
+| `data/processed/rewrite_prompts_poetry.jsonl` | Poetry rewrite prompts, 500 tasks |
+| Literature LLM rewrites | DeepSeek, Doubao, Gemini, and ChatGPT branches generated |
+| Academic LLM rewrites | ChatGPT, DeepSeek, Gemini, and Doubao branches generated |
+| Poetry LLM rewrites | ChatGPT, DeepSeek, Gemini, and Doubao branches generated |
+| Gemini literature rerun | Merged into `llm_rewrite_gemini_clean.jsonl` |
+| `data/processed/full_dataset_lit_academic_poetry.jsonl` | Main full dataset, 17295 samples |
+| `data/processed/lit_academic_poetry_{train,valid,internal_test}.jsonl` | Main pair-safe split |
+| TF-IDF baseline | Implemented in `src/models/train_tfidf_baseline.py` |
+| DeBERTa classifier | Implemented in `src/models/train_deberta.py` |
+| Ensemble tuner | Implemented in `src/models/ensemble.py`; best fine config uses `alpha=0.33`, `threshold=0.48` |
+| Final ensemble inference | Implemented in `src/evaluation/predict_ensemble.py` |
+| API | Optional future serving work |
+
+For detailed handoff notes, read:
+
+- `NLG_LLM_Detector_Task_Outline.md`
+- `NLG_LLM_Detector_Progress_and_Plan_Updated_2026-05-20.md`
+- `RESULTS_AND_OPTIMIZATION_PLAN.md`
+
+## Repository Layout
+
+```text
+.
+|-- data/
+|   |-- raw/                 # Ignored local raw data
+|   `-- processed/           # Ignored generated JSONL artifacts
+|-- outputs/
+|   |-- figures/             # Ignored generated figures
+|   |-- models/              # Ignored trained artifacts
+|   `-- predictions/         # Ignored prediction outputs
+|-- src/
+|   |-- app/                 # Future FastAPI app
+|   |-- data/                # Data collection, prompt, rewrite, QC, split scripts
+|   |-- evaluation/          # Final inference and prediction analysis scripts
+|   |-- features/            # Future feature utilities
+|   `-- models/              # Baseline and future neural training scripts
+|-- requirements.txt
+|-- RESULTS_AND_OPTIMIZATION_PLAN.md
+`-- README.md
+```
+
+`data/`, `outputs/`, `.env`, `.venv/`, and local IDE files are intentionally
+ignored by Git.
+
+## Setup
+
+Windows PowerShell:
+
+```powershell
+py -3.10 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
+
+If `python` is not on PATH, use:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+```
+
+## Environment Variables
+
+Create a local `.env` file for rewrite generation. Do not commit it.
+
+```text
+GPTSAPI_API_KEY=your_gptsapi_api_key
+DEEPSEEK_API_KEY=...
+ARK_API_KEY=...
+
+# Optional model overrides
+CHATGPT_MODEL=gpt-5.4-mini
+GEMINI_MODEL=gemini-3-flash-preview
+DOUBAO_MODEL=doubao-seed-2-0-pro-260215
+```
+
+The GPTSAPI key is used by the ChatGPT and Gemini rewrite scripts. The ARK key
+is used by Doubao.
+
+## Common Commands
+
+Inspect human seed:
+
+```powershell
+python src/data/inspect_human_seed.py
+```
+
+Inspect LLM rewrite quality:
+
+```powershell
+python src/data/inspect_llm_rewrite.py --input data/processed/llm_rewrite_chatgpt.jsonl
+python src/data/inspect_llm_rewrite.py --input data/processed/llm_rewrite_academic_deepseek.jsonl
+```
+
+Prepare Gemini literature rerun prompts:
+
+```powershell
+python src/data/prepare_gemini_literature_rerun_prompts.py
+```
+
+Run Gemini literature rerun:
+
+```powershell
+python src/data/generate_gemini_rewrites.py `
+  --input data/processed/rewrite_prompts_gemini_literature_rerun.jsonl `
+  --output data/processed/llm_rewrite_gemini_rerun.jsonl `
+  --failed data/processed/llm_rewrite_gemini_rerun_failed.jsonl `
+  --limit -1 `
+  --model gemini-3-flash-preview `
+  --max_tokens 3000 `
+  --temperature 0.4 `
+  --top_p 0.8 `
+  --sleep 0.5
+```
+
+Merge Gemini rerun outputs into a clean literature file:
+
+```powershell
+python src/data/merge_gemini_literature_rerun.py
+```
+
+Build a full dataset:
+
+```powershell
+python src/data/build_full_dataset.py `
+  --human data/processed/human_seed.jsonl `
+  --llm `
+    data/processed/llm_rewrite_deepseek.jsonl `
+    data/processed/llm_rewrite_doubao.jsonl `
+    data/processed/llm_rewrite_chatgpt.jsonl `
+    data/processed/llm_rewrite_gemini_clean.jsonl `
+  --output data/processed/full_dataset_literature.jsonl `
+  --report data/processed/full_dataset_literature_report.json
+```
+
+Build the final literature + academic + poetry dataset:
+
+```powershell
+python src/data/merge_human_seeds.py `
+  --inputs `
+    data/processed/human_seed.jsonl `
+    data/processed/academic_seed.jsonl `
+    data/processed/poetry_seed.jsonl `
+  --output data/processed/human_seed_combined.jsonl `
+  --report data/processed/human_seed_combined_report.json
+
+python src/data/build_full_dataset.py `
+  --human data/processed/human_seed_combined.jsonl `
+  --llm `
+    data/processed/llm_rewrite_deepseek.jsonl `
+    data/processed/llm_rewrite_doubao.jsonl `
+    data/processed/llm_rewrite_chatgpt.jsonl `
+    data/processed/llm_rewrite_gemini_clean.jsonl `
+    data/processed/llm_rewrite_academic_chatgpt.jsonl `
+    data/processed/llm_rewrite_academic_deepseek.jsonl `
+    data/processed/llm_rewrite_academic_gemini.jsonl `
+    data/processed/llm_rewrite_academic_doubao.jsonl `
+    data/processed/llm_rewrite_poetry_chatgpt.jsonl `
+    data/processed/llm_rewrite_poetry_deepseek.jsonl `
+    data/processed/llm_rewrite_poetry_gemini.jsonl `
+    data/processed/llm_rewrite_poetry_doubao.jsonl `
+  --output data/processed/full_dataset_lit_academic_poetry.jsonl `
+  --report data/processed/full_dataset_lit_academic_poetry_report.json
+```
+
+Split by `pair_id`:
+
+```powershell
+python src/data/split_dataset_by_pair.py `
+  --input data/processed/full_dataset_lit_academic_poetry.jsonl `
+  --prefix lit_academic_poetry_
+```
+
+Train TF-IDF baseline:
+
+```powershell
+python src/models/train_tfidf_baseline.py `
+  --train data/processed/lit_academic_poetry_train.jsonl `
+  --valid data/processed/lit_academic_poetry_valid.jsonl `
+  --test data/processed/lit_academic_poetry_internal_test.jsonl `
+  --output_dir outputs/models/tfidf_lit_academic_poetry
+```
+
+Fine-tune DeBERTa:
+
+```powershell
+python src/models/train_deberta.py `
+  --train data/processed/lit_academic_poetry_train.jsonl `
+  --valid data/processed/lit_academic_poetry_valid.jsonl `
+  --test data/processed/lit_academic_poetry_internal_test.jsonl `
+  --output_dir outputs/models/deberta_lit_academic_poetry `
+  --model_name microsoft/deberta-v3-base `
+  --max_length 512 `
+  --batch_size 4 `
+  --eval_batch_size 8 `
+  --gradient_accumulation_steps 2 `
+  --learning_rate 1e-5 `
+  --epochs 3
+```
+
+Tune DeBERTa + TF-IDF ensemble after both prediction files exist:
+
+```powershell
+python src/models/ensemble.py `
+  --valid_deberta outputs/models/deberta_lit_academic_poetry/predictions/deberta_valid_predictions.jsonl `
+  --valid_tfidf outputs/models/tfidf_lit_academic_poetry/predictions/tfidf_valid_predictions.jsonl `
+  --test_deberta outputs/models/deberta_lit_academic_poetry/predictions/deberta_internal_test_predictions.jsonl `
+  --test_tfidf outputs/models/tfidf_lit_academic_poetry/predictions/tfidf_internal_test_predictions.jsonl `
+  --output_dir outputs/models/ensemble_lit_academic_poetry_fine `
+  --alphas 0.25,0.26,0.27,0.28,0.29,0.3,0.31,0.32,0.33,0.34,0.35,0.36,0.37,0.38,0.39,0.4,0.41,0.42,0.43,0.44,0.45,0.46,0.47,0.48,0.49,0.5,0.51,0.52,0.53,0.54,0.55 `
+  --thresholds 0.45,0.46,0.47,0.48,0.49,0.5,0.51,0.52,0.53,0.54,0.55,0.56,0.57,0.58,0.59,0.6
+```
+
+Run final ensemble inference on the teacher test set:
+
+```powershell
+python src/evaluation/predict_ensemble.py `
+  --input data/raw/teacher_test.json `
+  --output outputs/predictions/teacher_test_final_ensemble_predictions.jsonl `
+  --submission outputs/predictions/teacher_test_submission_minimal.json `
+  --metrics outputs/predictions/teacher_test_final_ensemble_metrics.json `
+  --batch_size 16 `
+  --minimal_submission
+```
+
+The default ensemble configuration is loaded from:
+
+```text
+outputs/models/ensemble_lit_academic_poetry_fine/fusion_config.json
+```
+
+Current final teacher-test result:
+
+```text
+accuracy  0.9033
+precision 0.8712
+recall    0.9467
+f1        0.9073
+roc_auc   0.9663
+confusion [[129, 21], [8, 142]]
+```
+
+The minimal submission file is a JSON list with one record per input sample:
+
+```json
+{"label": 1, "probability": 0.83}
+```
+
+Generate a teacher-test error-analysis note:
+
+```powershell
+python src/evaluation/analyze_predictions.py `
+  --predictions outputs/predictions/teacher_test_final_ensemble_predictions.jsonl `
+  --input data/raw/teacher_test.json `
+  --output outputs/predictions/teacher_test_error_analysis.md `
+  --threshold 0.48 `
+  --examples 8
+```
+
+Report-ready generated artifacts:
+
+```text
+outputs/predictions/final_report_tables.md
+outputs/predictions/teacher_test_error_analysis.md
+```
+
+The public repository does not commit `outputs/` files. The report-ready
+metrics and the detailed optimization roadmap are summarized in:
+
+```text
+RESULTS_AND_OPTIMIZATION_PLAN.md
+```
+
+## Data Rules
+
+- Do not use the teacher test JSON for training, threshold tuning, model
+  selection, or prompt selection.
+- Keep each human source and its LLM rewrites in the same split via `pair_id`.
+- Prefer quality filtering over maximizing sample count.
+- Keep generator and domain metadata for ablation and error analysis.
+
+## Next Work Items
+
+1. Move the tables and error-analysis observations into the final written report.
+2. If there is time for another modeling pass, prioritize hard human negatives,
+   ChatGPT-style rewrites, poetry expansion, and validation-only calibration.
+3. Add API serving only if required by the final submission format.
