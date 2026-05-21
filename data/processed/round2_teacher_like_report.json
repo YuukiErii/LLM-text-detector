@@ -1,0 +1,249 @@
+{
+  "base_train": "data\\processed\\lit_academic_poetry_train.jsonl",
+  "valid_for_leakage_check": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\lit_academic_poetry_valid.jsonl",
+  "internal_test_for_leakage_check": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\lit_academic_poetry_internal_test.jsonl",
+  "human_seed_inputs": [
+    "data\\processed\\round2_human_hardneg_source.jsonl"
+  ],
+  "llm_seed_inputs": [
+    "data\\processed\\llm_rewrite_chatgpt_hard_positive.jsonl",
+    "data\\processed\\llm_rewrite_poetry_expansion_chatgpt.jsonl",
+    "data\\processed\\llm_rewrite_round2_chatgpt_hard_positive.jsonl",
+    "data\\processed\\llm_rewrite_round2_chatgpt_hard_positive_chunk1.jsonl",
+    "data\\processed\\llm_rewrite_round2_chatgpt_hard_positive_chunk2.jsonl",
+    "data\\processed\\llm_rewrite_round2_chatgpt_hard_positive_chunk3.jsonl",
+    "data\\processed\\llm_rewrite_round2_chatgpt_hard_positive_chunk4.jsonl",
+    "data\\processed\\llm_rewrite_round2_chatgpt_hard_positive_remain1.jsonl",
+    "data\\processed\\llm_rewrite_round2_chatgpt_hard_positive_remain2.jsonl",
+    "data\\processed\\llm_rewrite_round2_chatgpt_hard_positive_remain3.jsonl",
+    "data\\processed\\llm_rewrite_round2_chatgpt_hard_positive_remain4.jsonl",
+    "data\\processed\\llm_rewrite_round2_chatgpt_hard_positive_remain5.jsonl",
+    "data\\processed\\llm_rewrite_round2_chatgpt_hard_positive_remain6.jsonl",
+    "data\\processed\\llm_rewrite_round2_chatgpt_hard_positive_remain7.jsonl",
+    "data\\processed\\llm_rewrite_round2_chatgpt_hard_positive_remain8.jsonl"
+  ],
+  "outputs": {
+    "human_seed": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\round2_human_hardneg_seed.jsonl",
+    "llm_seed": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\round2_llm_hardpos_seed.jsonl",
+    "train": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\round2_teacher_like_train.jsonl",
+    "dev": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\round2_teacher_like_dev.jsonl"
+  },
+  "dev_ratio": 0.25,
+  "seed": 20260521,
+  "human_candidates": {
+    "num_samples": 2500,
+    "num_pair_ids": 2500,
+    "label_distribution": {
+      "0": 2500
+    },
+    "domain_distribution": {
+      "poetry": 900,
+      "literature": 800,
+      "academic": 800
+    },
+    "generator_distribution": {
+      "human": 2500
+    },
+    "round2_tag_distribution": {
+      "classical_poetry_human": 339,
+      "modern_freeverse_human": 643,
+      "short_fragment_human": 718,
+      "formal_academic_human": 800
+    },
+    "bucket_distribution": {
+      "poetry_classical": 339,
+      "poetry_freeverse": 643,
+      "literary_short_fragment": 724,
+      "academic_formal": 398,
+      "general_prose": 395,
+      "literary_old_prose": 1
+    },
+    "word_length": {
+      "min": 15,
+      "max": 260,
+      "mean": 69.8748
+    }
+  },
+  "llm_candidates": {
+    "num_samples": 1592,
+    "num_pair_ids": 1592,
+    "label_distribution": {
+      "1": 1592
+    },
+    "domain_distribution": {
+      "literature": 655,
+      "academic": 347,
+      "poetry": 590
+    },
+    "generator_distribution": {
+      "chatgpt": 1592
+    },
+    "round2_tag_distribution": {
+      "chatgpt_conservative_literary": 596,
+      "chatgpt_old_fiction": 25,
+      "chatgpt_natural_academic": 347,
+      "chatgpt_poetry_conservative": 216,
+      "chatgpt_archaic_poetry": 408
+    },
+    "bucket_distribution": {
+      "literary_short_fragment": 599,
+      "poetry_classical": 215,
+      "poetry_freeverse": 420,
+      "general_prose": 182,
+      "academic_formal": 176
+    },
+    "word_length": {
+      "min": 17,
+      "max": 267,
+      "mean": 61.19095477386934
+    }
+  },
+  "train_additions": {
+    "num_samples": 3027,
+    "num_pair_ids": 1934,
+    "label_distribution": {
+      "0": 1874,
+      "1": 1153
+    },
+    "domain_distribution": {
+      "poetry": 1084,
+      "literature": 1066,
+      "academic": 877
+    },
+    "generator_distribution": {
+      "human": 1874,
+      "chatgpt": 1153
+    },
+    "round2_tag_distribution": {
+      "classical_poetry_human": 257,
+      "chatgpt_archaic_poetry": 264,
+      "modern_freeverse_human": 470,
+      "chatgpt_poetry_conservative": 174,
+      "chatgpt_conservative_literary": 437,
+      "chatgpt_old_fiction": 17,
+      "chatgpt_natural_academic": 261,
+      "short_fragment_human": 531,
+      "formal_academic_human": 616
+    },
+    "bucket_distribution": {
+      "poetry_classical": 397,
+      "poetry_freeverse": 775,
+      "literary_short_fragment": 976,
+      "general_prose": 451,
+      "academic_formal": 428
+    },
+    "word_length": {
+      "min": 15,
+      "max": 259,
+      "mean": 67.0366699702676
+    }
+  },
+  "round2_train": {
+    "num_samples": 16863,
+    "num_pair_ids": 8998,
+    "label_distribution": {
+      "0": 8938,
+      "1": 7925
+    },
+    "domain_distribution": {
+      "literature": 12261,
+      "academic": 2692,
+      "poetry": 1910
+    },
+    "generator_distribution": {
+      "human": 8938,
+      "chatgpt": 3043,
+      "doubao": 1488,
+      "gemini": 1495,
+      "deepseek": 1899
+    },
+    "round2_tag_distribution": {
+      "unknown": 13836,
+      "classical_poetry_human": 257,
+      "chatgpt_archaic_poetry": 264,
+      "modern_freeverse_human": 470,
+      "chatgpt_poetry_conservative": 174,
+      "chatgpt_conservative_literary": 437,
+      "chatgpt_old_fiction": 17,
+      "chatgpt_natural_academic": 261,
+      "short_fragment_human": 531,
+      "formal_academic_human": 616
+    },
+    "bucket_distribution": {
+      "unknown": 13836,
+      "poetry_classical": 397,
+      "poetry_freeverse": 775,
+      "literary_short_fragment": 976,
+      "general_prose": 451,
+      "academic_formal": 428
+    },
+    "word_length": {
+      "min": 15,
+      "max": 491,
+      "mean": 103.86704619581332
+    }
+  },
+  "round2_dev": {
+    "num_samples": 1065,
+    "num_pair_ids": 645,
+    "label_distribution": {
+      "0": 626,
+      "1": 439
+    },
+    "domain_distribution": {
+      "poetry": 406,
+      "literature": 389,
+      "academic": 270
+    },
+    "generator_distribution": {
+      "human": 626,
+      "chatgpt": 439
+    },
+    "round2_tag_distribution": {
+      "classical_poetry_human": 82,
+      "chatgpt_archaic_poetry": 144,
+      "modern_freeverse_human": 173,
+      "chatgpt_poetry_conservative": 42,
+      "chatgpt_conservative_literary": 159,
+      "chatgpt_old_fiction": 8,
+      "chatgpt_natural_academic": 86,
+      "short_fragment_human": 187,
+      "formal_academic_human": 184
+    },
+    "bucket_distribution": {
+      "poetry_classical": 157,
+      "poetry_freeverse": 288,
+      "literary_short_fragment": 347,
+      "academic_formal": 146,
+      "general_prose": 126,
+      "literary_old_prose": 1
+    },
+    "word_length": {
+      "min": 15,
+      "max": 267,
+      "mean": 64.96056338028168
+    }
+  },
+  "dedup_skipped": {
+    "human": {},
+    "llm": {
+      "duplicate_pair_id": 396
+    }
+  },
+  "notes": [],
+  "acceptance": {
+    "hard_buckets_covered": 9,
+    "round2_dev_rows": 1065,
+    "round2_train_additions": 3027,
+    "min_dev_class_share": 0.41220657276995304,
+    "has_poetry_representation": true,
+    "has_academic_representation": true,
+    "meets_plan_minimums": {
+      "hard_buckets_at_least_5": true,
+      "dev_rows_at_least_800": true,
+      "train_additions_at_least_2500": true,
+      "no_dev_class_below_40_percent": true
+    },
+    "notes": []
+  }
+}

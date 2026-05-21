@@ -192,7 +192,7 @@ def looks_truncated(text: str) -> bool:
     return text[-1] not in valid_endings
 
 
-def get_quality_thresholds(domain: str) -> Dict:
+def get_quality_thresholds(domain: str, prompt_type: str = "") -> Dict:
     """
     Domain-aware quality thresholds.
 
@@ -203,6 +203,25 @@ def get_quality_thresholds(domain: str) -> Dict:
         dataset names, model names, and technical phrases should be preserved.
     """
     domain = (domain or "").lower()
+    prompt_type = (prompt_type or "").lower()
+
+    if prompt_type.startswith("chatgpt_conservative") or "old_fiction" in prompt_type:
+        return {
+            "min_abs_words": 20,
+            "min_length_ratio": 0.55,
+            "max_length_ratio": 1.60,
+            "max_jaccard": 0.90,
+            "fail_on_truncated": False,
+        }
+
+    if "archaic_poetry" in prompt_type or "poetry_freeverse" in prompt_type:
+        return {
+            "min_abs_words": 12,
+            "min_length_ratio": 0.45,
+            "max_length_ratio": 1.80,
+            "max_jaccard": 0.92,
+            "fail_on_truncated": False,
+        }
 
     if domain == "academic":
         return {
@@ -222,8 +241,8 @@ def get_quality_thresholds(domain: str) -> Dict:
     }
 
 
-def basic_quality_check(source_text: str, rewrite_text: str, domain: str = "literature") -> Dict:
-    thresholds = get_quality_thresholds(domain)
+def basic_quality_check(source_text: str, rewrite_text: str, domain: str = "literature", prompt_type: str = "") -> Dict:
+    thresholds = get_quality_thresholds(domain, prompt_type=prompt_type)
 
     source_words = word_count(source_text)
     rewrite_words = word_count(rewrite_text)
@@ -496,6 +515,7 @@ def main():
                 source_text=source_text,
                 rewrite_text=rewrite_text,
                 domain=domain,
+                prompt_type=task.get("prompt_type", ""),
             )
 
             output_item = build_output_item(

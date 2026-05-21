@@ -1,0 +1,193 @@
+{
+  "input_path": "data\\processed\\full_dataset_lit_academic_poetry.jsonl",
+  "train_ratio": 0.8,
+  "valid_ratio": 0.1,
+  "test_ratio": 0.1,
+  "seed": 42,
+  "total_samples": 17295,
+  "total_pair_ids": 8830,
+  "pair_signature_distribution": {
+    "human_and_llm": 8465,
+    "human_only": 365
+  },
+  "train": {
+    "num_samples": 13836,
+    "num_pair_ids": 7064,
+    "label_distribution": {
+      "0": 7064,
+      "1": 6772
+    },
+    "generator_distribution": {
+      "human": 7064,
+      "chatgpt": 1890,
+      "doubao": 1488,
+      "gemini": 1495,
+      "deepseek": 1899
+    },
+    "source_distribution": {
+      "gutenberg:dickens_oliver_twist": 833,
+      "chatgpt": 1890,
+      "gutenberg:hardy_return_of_the_native": 784,
+      "doubao": 1488,
+      "gutenberg:hardy_far_from_the_madding_crowd": 719,
+      "gutenberg:twain_connecticut_yankee": 537,
+      "gutenberg:wells_mr_britling": 622,
+      "gemini": 1495,
+      "deepseek": 1899,
+      "acl_ocl:2020": 948,
+      "gutenberg:dickens_a_tale_of_two_cities": 768,
+      "gutenberg:london_martin_eden": 654,
+      "gutenberg:ohenry_the_four_million": 329,
+      "gutenberg_poetry:4800": 75,
+      "gutenberg_poetry:23684": 62,
+      "gutenberg:shelley_frankenstein": 428,
+      "gutenberg_poetry:1279": 73,
+      "gutenberg_poetry:12242": 72,
+      "gutenberg_poetry:1322": 67,
+      "gutenberg_poetry:1934": 66,
+      "gutenberg:harte_devils_ford": 27
+    },
+    "prompt_type_distribution": {
+      "human": 7064,
+      "style_imitation": 1818,
+      "literary_paraphrase": 1847,
+      "academic_paraphrase": 288,
+      "literary_modernize": 1829,
+      "academic_style_transfer": 289,
+      "poetry_style_transfer": 142,
+      "poetry_paraphrase": 132,
+      "academic_modernize": 290,
+      "poetry_modernize": 137
+    },
+    "domain_distribution": {
+      "literature": 11195,
+      "academic": 1815,
+      "poetry": 826
+    },
+    "word_length": {
+      "min": 21,
+      "max": 491,
+      "mean": 111.92468921653658
+    }
+  },
+  "valid": {
+    "num_samples": 1728,
+    "num_pair_ids": 882,
+    "label_distribution": {
+      "0": 882,
+      "1": 846
+    },
+    "generator_distribution": {
+      "human": 882,
+      "gemini": 193,
+      "deepseek": 235,
+      "chatgpt": 235,
+      "doubao": 183
+    },
+    "source_distribution": {
+      "gutenberg:london_martin_eden": 83,
+      "gemini": 193,
+      "gutenberg:wells_mr_britling": 86,
+      "deepseek": 235,
+      "gutenberg:twain_connecticut_yankee": 66,
+      "acl_ocl:2020": 117,
+      "gutenberg:ohenry_the_four_million": 40,
+      "gutenberg:dickens_oliver_twist": 96,
+      "chatgpt": 235,
+      "gutenberg:shelley_frankenstein": 63,
+      "doubao": 183,
+      "gutenberg:hardy_far_from_the_madding_crowd": 109,
+      "gutenberg:hardy_return_of_the_native": 90,
+      "gutenberg:dickens_a_tale_of_two_cities": 84,
+      "gutenberg_poetry:1934": 8,
+      "gutenberg_poetry:1322": 9,
+      "gutenberg_poetry:23684": 12,
+      "gutenberg_poetry:1279": 7,
+      "gutenberg:harte_devils_ford": 3,
+      "gutenberg_poetry:12242": 5,
+      "gutenberg_poetry:4800": 4
+    },
+    "prompt_type_distribution": {
+      "human": 882,
+      "literary_modernize": 237,
+      "style_imitation": 239,
+      "academic_style_transfer": 38,
+      "literary_paraphrase": 224,
+      "academic_paraphrase": 35,
+      "academic_modernize": 29,
+      "poetry_modernize": 13,
+      "poetry_style_transfer": 12,
+      "poetry_paraphrase": 19
+    },
+    "domain_distribution": {
+      "literature": 1420,
+      "academic": 219,
+      "poetry": 89
+    },
+    "word_length": {
+      "min": 22,
+      "max": 416,
+      "mean": 110.44328703703704
+    }
+  },
+  "internal_test": {
+    "num_samples": 1731,
+    "num_pair_ids": 884,
+    "label_distribution": {
+      "0": 884,
+      "1": 847
+    },
+    "generator_distribution": {
+      "human": 884,
+      "doubao": 186,
+      "gemini": 187,
+      "chatgpt": 241,
+      "deepseek": 233
+    },
+    "source_distribution": {
+      "gutenberg:london_martin_eden": 80,
+      "doubao": 186,
+      "gutenberg:shelley_frankenstein": 52,
+      "gemini": 187,
+      "gutenberg:hardy_far_from_the_madding_crowd": 94,
+      "chatgpt": 241,
+      "gutenberg:dickens_oliver_twist": 120,
+      "deepseek": 233,
+      "acl_ocl:2020": 135,
+      "gutenberg:wells_mr_britling": 87,
+      "gutenberg:hardy_return_of_the_native": 100,
+      "gutenberg_poetry:1934": 9,
+      "gutenberg:twain_connecticut_yankee": 61,
+      "gutenberg:dickens_a_tale_of_two_cities": 80,
+      "gutenberg:ohenry_the_four_million": 33,
+      "gutenberg_poetry:23684": 9,
+      "gutenberg_poetry:12242": 7,
+      "gutenberg_poetry:1279": 4,
+      "gutenberg_poetry:1322": 7,
+      "gutenberg_poetry:4800": 4,
+      "gutenberg:harte_devils_ford": 2
+    },
+    "prompt_type_distribution": {
+      "human": 884,
+      "literary_modernize": 231,
+      "literary_paraphrase": 221,
+      "style_imitation": 232,
+      "academic_style_transfer": 38,
+      "academic_modernize": 43,
+      "poetry_modernize": 16,
+      "academic_paraphrase": 42,
+      "poetry_paraphrase": 13,
+      "poetry_style_transfer": 11
+    },
+    "domain_distribution": {
+      "literature": 1393,
+      "academic": 258,
+      "poetry": 80
+    },
+    "word_length": {
+      "min": 21,
+      "max": 461,
+      "mean": 109.97111496244945
+    }
+  }
+}

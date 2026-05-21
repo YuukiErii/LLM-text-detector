@@ -1,0 +1,115 @@
+{
+  "input": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\lit_academic_poetry_train_hardneg_p50_l200_a150.jsonl",
+  "output": "data\\processed\\rewrite_prompts_chatgpt_hard_positive.jsonl",
+  "domain_quotas": {
+    "literature": 80,
+    "academic": 20,
+    "poetry": 20
+  },
+  "seed": 42,
+  "available_hard_negative_sources": {
+    "num_samples": 400,
+    "domain_distribution": {
+      "poetry": 50,
+      "literature": 200,
+      "academic": 150
+    },
+    "prompt_type_distribution": {
+      "human_hard_negative": 400
+    },
+    "source_distribution_top20": {
+      "hard_negative:gutenberg_short:dickens_oliver_twist": 55,
+      "hard_negative:gutenberg_short:hardy_far_from_the_madding_crowd": 44,
+      "hard_negative:gutenberg_short:dickens_a_tale_of_two_cities": 25,
+      "hard_negative:gutenberg_short:hardy_return_of_the_native": 24,
+      "hard_negative:gutenberg_short:twain_connecticut_yankee": 17,
+      "hard_negative:gutenberg_short:wells_mr_britling": 13,
+      "hard_negative:gutenberg_poetry:12242": 10,
+      "hard_negative:gutenberg_poetry:1279": 10,
+      "hard_negative:gutenberg_poetry:1322": 10,
+      "hard_negative:gutenberg_poetry:4800": 9,
+      "hard_negative:acl_ocl:2020.acl-demos.19": 8,
+      "hard_negative:gutenberg_short:shelley_frankenstein": 7,
+      "hard_negative:gutenberg_short:london_martin_eden": 7,
+      "hard_negative:gutenberg_poetry:23684": 6,
+      "hard_negative:acl_ocl:2020.acl-main.104": 6,
+      "hard_negative:acl_ocl:2020.acl-demos.11": 6,
+      "hard_negative:acl_ocl:2020.acl-main.10": 6,
+      "hard_negative:acl_ocl:2020.acl-demos.21": 6,
+      "hard_negative:acl_ocl:2020.acl-demos.25": 6,
+      "hard_negative:gutenberg_poetry:1934": 5
+    }
+  },
+  "selected_sources": {
+    "num_samples": 120,
+    "domain_distribution": {
+      "literature": 80,
+      "academic": 20,
+      "poetry": 20
+    },
+    "prompt_type_distribution": {
+      "human_hard_negative": 120
+    },
+    "source_distribution_top20": {
+      "hard_negative:gutenberg_short:dickens_oliver_twist": 21,
+      "hard_negative:gutenberg_short:hardy_far_from_the_madding_crowd": 19,
+      "hard_negative:gutenberg_short:hardy_return_of_the_native": 11,
+      "hard_negative:gutenberg_short:twain_connecticut_yankee": 9,
+      "hard_negative:gutenberg_short:dickens_a_tale_of_two_cities": 6,
+      "hard_negative:gutenberg_poetry:4800": 5,
+      "hard_negative:gutenberg_poetry:1322": 5,
+      "hard_negative:gutenberg_short:wells_mr_britling": 4,
+      "hard_negative:gutenberg_short:shelley_frankenstein": 3,
+      "hard_negative:gutenberg_short:london_martin_eden": 3,
+      "hard_negative:acl_ocl:2020.acl-main.112": 3,
+      "hard_negative:gutenberg_poetry:12242": 3,
+      "hard_negative:gutenberg_poetry:1279": 3,
+      "hard_negative:gutenberg_short:harte_devils_ford": 2,
+      "hard_negative:gutenberg_short:ohenry_the_four_million": 2,
+      "hard_negative:acl_ocl:2020.acl-demos.25": 2,
+      "hard_negative:acl_ocl:2020.acl-demos.11": 2,
+      "hard_negative:acl_ocl:2020.acl-demos.38": 2,
+      "hard_negative:acl_ocl:2020.acl-demos.24": 2,
+      "hard_negative:acl_ocl:2020.acl-demos.41": 2
+    }
+  },
+  "prompt_tasks": {
+    "num_samples": 120,
+    "domain_distribution": {
+      "literature": 80,
+      "academic": 20,
+      "poetry": 20
+    },
+    "prompt_type_distribution": {
+      "chatgpt_hard_literary_minimal_edit": 27,
+      "chatgpt_hard_literary_archaic_preserving": 27,
+      "chatgpt_hard_literary_polished_imitation": 26,
+      "chatgpt_hard_academic_minimal_edit": 10,
+      "chatgpt_hard_academic_human_polish": 10,
+      "chatgpt_hard_poetry_line_preserving": 10,
+      "chatgpt_hard_poetry_archaic_preserving": 10
+    },
+    "source_distribution_top20": {
+      "hard_negative:gutenberg_short:dickens_oliver_twist": 21,
+      "hard_negative:gutenberg_short:hardy_far_from_the_madding_crowd": 19,
+      "hard_negative:gutenberg_short:hardy_return_of_the_native": 11,
+      "hard_negative:gutenberg_short:twain_connecticut_yankee": 9,
+      "hard_negative:gutenberg_short:dickens_a_tale_of_two_cities": 6,
+      "hard_negative:gutenberg_poetry:4800": 5,
+      "hard_negative:gutenberg_poetry:1322": 5,
+      "hard_negative:gutenberg_short:wells_mr_britling": 4,
+      "hard_negative:gutenberg_short:shelley_frankenstein": 3,
+      "hard_negative:gutenberg_short:london_martin_eden": 3,
+      "hard_negative:acl_ocl:2020.acl-main.112": 3,
+      "hard_negative:gutenberg_poetry:12242": 3,
+      "hard_negative:gutenberg_poetry:1279": 3,
+      "hard_negative:gutenberg_short:harte_devils_ford": 2,
+      "hard_negative:gutenberg_short:ohenry_the_four_million": 2,
+      "hard_negative:acl_ocl:2020.acl-demos.25": 2,
+      "hard_negative:acl_ocl:2020.acl-demos.11": 2,
+      "hard_negative:acl_ocl:2020.acl-demos.38": 2,
+      "hard_negative:acl_ocl:2020.acl-demos.24": 2,
+      "hard_negative:acl_ocl:2020.acl-demos.41": 2
+    }
+  }
+}

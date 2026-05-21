@@ -1,6 +1,6 @@
 # Project Report: LLM Text Detector
 
-Updated: 2026-05-21
+Updated: 2026-05-22
 
 This file is the consolidated project handoff. It keeps the final results,
 model recipe, optimization history, and next-step judgment in one root-level
@@ -121,6 +121,22 @@ In absolute terms, it changes the result from `271/300` correct to `274/300`
 correct. The gain is modest but real; the optimized model is more balanced,
 with `13` false positives and `13` false negatives.
 
+Round3 added a precision-guarded repair route after the second optimization
+round. It did not beat Step7 on the final teacher-test diagnostic:
+
+| Round3 candidate | teacher_test Accuracy | Precision | Recall | F1 | FP | FN | Decision |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| Round3 ELECTRA | 0.8800 | 0.9071 | 0.8467 | 0.8759 | 13 | 23 | Reject |
+| Round3 OOF stacker | 0.9033 | 0.9353 | 0.8667 | 0.8997 | 9 | 20 | Reject |
+| Round3 precision guard | 0.9100 | 0.9073 | 0.9133 | 0.9103 | 14 | 13 | Reject |
+| Step7 ensemble | 0.9133 | 0.9133 | 0.9133 | 0.9133 | 13 | 13 | Keep final |
+
+The final Round3 submission file is therefore an explicit Step7 alias:
+
+```text
+outputs/predictions/round3_final_submission.json
+```
+
 ## 4. Optimization History
 
 The 2026-05-21 optimization pass followed a staged roadmap:
@@ -153,6 +169,23 @@ data/processed/lit_academic_poetry_train_hardneg_p50_chatgpt_hardpos_poetry_expa
 It combines the original train split, controlled hard negatives, ChatGPT-style
 hard positives, human poetry expansion, and ChatGPT poetry expansion.
 
+The 2026-05-22 Round3 pass then tested the postmortem hypothesis from
+`docs/ROUND2_POSTMORTEM_AND_ROUND3_PLAN.md`:
+
+1. Phase A audited Round2 error deltas.
+2. Phase B built a precision-guard development set.
+3. Phase C trained an ELECTRA branch, which failed the promotion gate.
+4. Phase D trained an OOF logistic stacker. It reduced FP, but became too
+   conservative and missed too many LLM positives.
+5. Phase E tuned precision-guarded override rules. On guard-dev it fixed `18`
+   Step7 false negatives with `0` induced false positives.
+6. Phase F rejected the precision guard on teacher-test because it made one
+   override that induced `1` new FP and fixed `0` Step7 FN.
+
+Round3's value is diagnostic: it shows that guarded repair can work on a
+constructed mirror set, but the current local data is still not sufficient for
+reliable teacher-test generalization.
+
 ## 5. Error Pattern
 
 The hardest remaining cases are:
@@ -184,19 +217,18 @@ Further threshold or linear ensemble tuning is unlikely to be enough. A
 diagnostic sweep over existing predictions only reaches the low `92%` range,
 and the existing model variants share many of the same residual errors.
 
-Most practical next steps:
+The second and third optimization rounds show that another global threshold is
+unlikely to be enough. Most practical next steps are data-first:
 
 1. Build a teacher-test-like development set from the residual error patterns:
    human free verse, classical poetry, polished prose, natural academic writing,
    old-fiction LLM rewrites, and ChatGPT conservative paraphrases.
-2. Add a domain router for poetry / literary prose / academic / short narrative,
-   then calibrate thresholds per domain.
-3. Replace simple linear fusion with a small stacking classifier over
-   `p_deberta`, `p_tfidf`, length, linebreak ratio, punctuation features,
-   archaic-word ratio, sentence-length variance, and domain prediction.
-4. Add a genuinely different third model branch, such as a RoBERTa / ELECTRA
-   classifier or a stylometry-only classifier, and ensemble only if it makes
-   different errors from DeBERTa and TF-IDF.
+2. Add more old-prose human mirrors; this remained the weakest mirror bucket in
+   Round3 Phase B.
+3. Add non-ChatGPT hard positives so the repair signal is not tied to one
+   generator style.
+4. Add a stylometry / char n-gram branch as a guard feature, and ensemble only
+   if it makes different errors from DeBERTa, TF-IDF, RoBERTa, and ELECTRA.
 5. Keep teacher-test labels out of training and threshold selection unless the
    course explicitly allows post-hoc tuning.
 
@@ -232,6 +264,21 @@ python src/evaluation/predict_ensemble.py `
   --batch_size 16
 ```
 
+Round3 final comparison:
+
+```powershell
+python src/evaluation/compare_round2_candidates.py `
+  --title "Round3 Final Teacher-Test Candidate Comparison" `
+  --runs `
+    step7=outputs/predictions/round2_step7_teacher_test_predictions.jsonl `
+    round3_electra=outputs/predictions/round3_electra_teacher_test_predictions.jsonl `
+    round3_oof_stacker=outputs/predictions/round3_oof_stacker_teacher_test_predictions.jsonl `
+    round3_precision_guard=outputs/predictions/round3_precision_guard_teacher_test_predictions.jsonl `
+  --output_md outputs/evaluation/round3_final_teacher_comparison.md `
+  --output_json outputs/evaluation/round3_final_teacher_comparison.json `
+  --overlap_csv outputs/evaluation/round3_error_overlap_matrix.csv
+```
+
 ## 8. Document Map
 
 Root-level documents:
@@ -241,6 +288,10 @@ Root-level documents:
 | `README.md` | Repo entrypoint, setup, commands, and public-facing overview |
 | `PROJECT_REPORT.md` | Consolidated final results, optimization summary, and next-step plan |
 | `docs/SECOND_ROUND_95_OPTIMIZATION_PLAN.md` | Detailed execution plan for the second-round 95% accuracy target |
+| `docs/ROUND2_RESULTS_SUMMARY.md` | Executed second-round results and final candidate comparison |
+| `docs/ROUND2_POSTMORTEM_AND_ROUND3_PLAN.md` | Round2 postmortem and Round3 execution plan |
+| `docs/ROUND3_PHASEA_C_PROGRESS.md` | Round3 Phase A-C handoff |
+| `docs/ROUND3_RESULTS_SUMMARY.md` | Completed Round3 Phase D-F results and final decision |
 
 Archived source documents:
 

@@ -1,0 +1,37 @@
+{
+  "input_dir": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\raw\\external_human\\poetry\\gutenberg_poetry",
+  "metadata": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\raw\\external_human\\poetry\\gutenberg_poetry\\metadata.json",
+  "output": "data\\processed\\poetry_expansion_seed.jsonl",
+  "target_count": 200,
+  "candidate_count": 2200,
+  "num_existing_text_keys": 11521,
+  "existing_paths": [
+    "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\human_seed_combined.jsonl",
+    "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\human_hard_negative_seed.jsonl",
+    "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\lit_academic_poetry_valid.jsonl",
+    "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\lit_academic_poetry_internal_test.jsonl"
+  ],
+  "skipped_existing_text": 119,
+  "skipped_duplicate_candidate": 0,
+  "selected": {
+    "num_samples": 200,
+    "source_distribution": {
+      "gutenberg_poetry:12242": 33,
+      "gutenberg_poetry:1279": 46,
+      "gutenberg_poetry:1322": 45,
+      "gutenberg_poetry:23684": 22,
+      "gutenberg_poetry:4800": 49,
+      "gutenberg_poetry:1934": 5
+    },
+    "word_count": {
+      "min": 24,
+      "max": 163,
+      "mean": 48.445
+    },
+    "line_count": {
+      "min": 3,
+      "max": 18,
+      "mean": 6.51
+    }
+  }
+}

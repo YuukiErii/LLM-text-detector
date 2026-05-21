@@ -1,0 +1,82 @@
+{
+  "total_samples": 16300,
+  "label_distribution": {
+    "0": 8330,
+    "1": 7970
+  },
+  "domain_distribution": {
+    "literature": 14008,
+    "academic": 2292
+  },
+  "generator_distribution": {
+    "human": 8330,
+    "deepseek": 2168,
+    "doubao": 1807,
+    "chatgpt": 2166,
+    "gemini": 1829
+  },
+  "source_distribution_top50": {
+    "deepseek": 2168,
+    "chatgpt": 2166,
+    "gemini": 1829,
+    "doubao": 1807,
+    "acl_ocl:2020": 1200,
+    "gutenberg:dickens_oliver_twist": 1049,
+    "gutenberg:hardy_return_of_the_native": 974,
+    "gutenberg:dickens_a_tale_of_two_cities": 932,
+    "gutenberg:hardy_far_from_the_madding_crowd": 922,
+    "gutenberg:london_martin_eden": 817,
+    "gutenberg:wells_mr_britling": 795,
+    "gutenberg:twain_connecticut_yankee": 664,
+    "gutenberg:shelley_frankenstein": 543,
+    "gutenberg:ohenry_the_four_million": 402,
+    "gutenberg:harte_devils_ford": 32
+  },
+  "prompt_type_distribution": {
+    "human": 8330,
+    "literary_modernize": 2297,
+    "literary_paraphrase": 2292,
+    "style_imitation": 2289,
+    "academic_modernize": 362,
+    "academic_style_transfer": 365,
+    "academic_paraphrase": 365
+  },
+  "domain_label_distribution": {
+    "literature|0": 7130,
+    "academic|0": 1200,
+    "literature|1": 6878,
+    "academic|1": 1092
+  },
+  "domain_generator_distribution": {
+    "literature|human": 7130,
+    "academic|human": 1200,
+    "literature|deepseek": 1730,
+    "literature|doubao": 1698,
+    "literature|chatgpt": 1728,
+    "literature|gemini": 1722,
+    "academic|chatgpt": 438,
+    "academic|deepseek": 438,
+    "academic|gemini": 107,
+    "academic|doubao": 109
+  },
+  "pair_stats": {
+    "total_unique_pair_ids": 8330,
+    "pairs_with_human": 8330,
+    "pairs_with_llm": 7970,
+    "pairs_with_both": 7970,
+    "pairs_with_multiple_domains": 0
+  },
+  "word_length": {
+    "min": 38,
+    "max": 491,
+    "mean": 115.51288343558282
+  },
+  "filtered_samples": {
+    "llm:llm_rewrite_deepseek.jsonl:possibly_truncated_text": 51,
+    "llm:llm_rewrite_doubao.jsonl:possibly_truncated_text": 67,
+    "llm:llm_rewrite_doubao.jsonl:quality_failed": 25,
+    "llm:llm_rewrite_chatgpt.jsonl:possibly_truncated_text": 55,
+    "llm:llm_rewrite_academic_deepseek.jsonl:quality_failed": 1,
+    "llm:llm_rewrite_academic_doubao.jsonl:possibly_truncated_text": 1
+  }
+}

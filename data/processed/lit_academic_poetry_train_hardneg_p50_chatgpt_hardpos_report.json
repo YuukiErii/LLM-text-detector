@@ -1,0 +1,127 @@
+{
+  "train_input": "data\\processed\\lit_academic_poetry_train_hardneg_p50_l200_a150.jsonl",
+  "llm_positives_input": "data\\processed\\llm_rewrite_chatgpt_hard_positive.jsonl",
+  "output": "data\\processed\\lit_academic_poetry_train_hardneg_p50_chatgpt_hardpos.jsonl",
+  "base_train": {
+    "num_samples": 14236,
+    "num_pair_ids": 7464,
+    "label_distribution": {
+      "0": 7464,
+      "1": 6772
+    },
+    "domain_distribution": {
+      "literature": 11395,
+      "academic": 1965,
+      "poetry": 876
+    },
+    "generator_distribution": {
+      "human": 7464,
+      "chatgpt": 1890,
+      "doubao": 1488,
+      "gemini": 1495,
+      "deepseek": 1899
+    },
+    "prompt_type_distribution": {
+      "human": 7064,
+      "style_imitation": 1818,
+      "literary_paraphrase": 1847,
+      "academic_paraphrase": 288,
+      "literary_modernize": 1829,
+      "academic_style_transfer": 289,
+      "poetry_style_transfer": 142,
+      "poetry_paraphrase": 132,
+      "academic_modernize": 290,
+      "poetry_modernize": 137,
+      "human_hard_negative": 400
+    }
+  },
+  "llm_positives_raw": {
+    "num_samples": 109,
+    "num_pair_ids": 109,
+    "label_distribution": {
+      "1": 109
+    },
+    "domain_distribution": {
+      "literature": 70,
+      "academic": 19,
+      "poetry": 20
+    },
+    "generator_distribution": {
+      "chatgpt": 109
+    },
+    "prompt_type_distribution": {
+      "chatgpt_hard_literary_minimal_edit": 25,
+      "chatgpt_hard_literary_archaic_preserving": 25,
+      "chatgpt_hard_literary_polished_imitation": 20,
+      "chatgpt_hard_academic_minimal_edit": 10,
+      "chatgpt_hard_academic_human_polish": 9,
+      "chatgpt_hard_poetry_line_preserving": 10,
+      "chatgpt_hard_poetry_archaic_preserving": 10
+    }
+  },
+  "llm_positives_kept": {
+    "num_samples": 109,
+    "num_pair_ids": 109,
+    "label_distribution": {
+      "1": 109
+    },
+    "domain_distribution": {
+      "literature": 70,
+      "academic": 19,
+      "poetry": 20
+    },
+    "generator_distribution": {
+      "chatgpt": 109
+    },
+    "prompt_type_distribution": {
+      "chatgpt_hard_literary_minimal_edit": 25,
+      "chatgpt_hard_literary_archaic_preserving": 25,
+      "chatgpt_hard_literary_polished_imitation": 20,
+      "chatgpt_hard_academic_minimal_edit": 10,
+      "chatgpt_hard_academic_human_polish": 9,
+      "chatgpt_hard_poetry_line_preserving": 10,
+      "chatgpt_hard_poetry_archaic_preserving": 10
+    }
+  },
+  "skipped": {},
+  "augmented_train": {
+    "num_samples": 14345,
+    "num_pair_ids": 7464,
+    "label_distribution": {
+      "0": 7464,
+      "1": 6881
+    },
+    "domain_distribution": {
+      "literature": 11465,
+      "academic": 1984,
+      "poetry": 896
+    },
+    "generator_distribution": {
+      "human": 7464,
+      "chatgpt": 1999,
+      "doubao": 1488,
+      "gemini": 1495,
+      "deepseek": 1899
+    },
+    "prompt_type_distribution": {
+      "human": 7064,
+      "style_imitation": 1818,
+      "literary_paraphrase": 1847,
+      "academic_paraphrase": 288,
+      "literary_modernize": 1829,
+      "academic_style_transfer": 289,
+      "poetry_style_transfer": 142,
+      "poetry_paraphrase": 132,
+      "academic_modernize": 290,
+      "poetry_modernize": 137,
+      "human_hard_negative": 400,
+      "chatgpt_hard_literary_minimal_edit": 25,
+      "chatgpt_hard_literary_archaic_preserving": 25,
+      "chatgpt_hard_literary_polished_imitation": 20,
+      "chatgpt_hard_academic_minimal_edit": 10,
+      "chatgpt_hard_academic_human_polish": 9,
+      "chatgpt_hard_poetry_line_preserving": 10,
+      "chatgpt_hard_poetry_archaic_preserving": 10
+    }
+  }
+}

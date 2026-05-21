@@ -49,6 +49,11 @@ ChatGPT-hard-positive, and poetry-expansion recipe, then ensembled with TF-IDF.
 The best validated teacher-test variants reach F1 `0.9133` versus `0.9073` for
 the original final ensemble.
 
+The 2026-05-22 Round3 pass added an OOF stacker and precision-guarded routing.
+Those candidates improved the constructed guard development set, but did not
+beat Step7 on the final teacher-test diagnostic. The final public system
+therefore remains the Step7 DeBERTa + TF-IDF ensemble.
+
 TF-IDF, DeBERTa, threshold calibration, comparison, and probability ensemble
 entrypoints are present. Training artifacts are intentionally not committed.
 
@@ -79,22 +84,27 @@ Current processed data includes:
 | API | Optional future serving work |
 
 For detailed handoff notes, read `PROJECT_REPORT.md` first. For the second
-round 95% target, read `docs/SECOND_ROUND_95_OPTIMIZATION_PLAN.md`. Older
-drafts, plans, and full work logs are preserved in `docs/archive/`.
+round 95% target, read `docs/SECOND_ROUND_95_OPTIMIZATION_PLAN.md`; for the
+executed second-round result, read `docs/ROUND2_RESULTS_SUMMARY.md`; for the
+third-round OOF and precision-guard result, read
+`docs/ROUND3_RESULTS_SUMMARY.md`. Older drafts, plans, and full work logs are
+preserved in `docs/archive/`.
 
 ## Repository Layout
 
 ```text
 .
 |-- data/
-|   |-- raw/                 # Ignored local raw data
-|   `-- processed/           # Ignored generated JSONL artifacts
+|   |-- raw/                 # Raw external caches ignored, teacher_test.json tracked
+|   `-- processed/           # Tracked processed JSONL datasets and reports
 |-- outputs/
 |   |-- figures/             # Ignored generated figures
 |   |-- models/              # Ignored trained artifacts
 |   `-- predictions/         # Ignored prediction outputs
 |-- docs/
 |   |-- SECOND_ROUND_95_OPTIMIZATION_PLAN.md
+|   |-- ROUND2_POSTMORTEM_AND_ROUND3_PLAN.md
+|   |-- ROUND3_RESULTS_SUMMARY.md
 |   `-- archive/             # Preserved historical markdown drafts and logs
 |-- src/
 |   |-- app/                 # Future FastAPI app
@@ -107,8 +117,10 @@ drafts, plans, and full work logs are preserved in `docs/archive/`.
 `-- README.md
 ```
 
-`data/`, `outputs/`, `.env`, `.venv/`, and local IDE files are intentionally
-ignored by Git.
+`data/processed/` and `data/raw/teacher_test.json` are tracked so the project
+can be reproduced from the repository. Large raw external caches under
+`data/raw/external_*`, `outputs/`, `.env`, `.venv/`, and local IDE files are
+intentionally ignored by Git.
 
 ## Setup
 
@@ -304,6 +316,7 @@ outputs/models/ensemble_lit_academic_poetry_fine/fusion_config.json
 Current final teacher-test result:
 
 ```text
+final system = Step7 DeBERTa + TF-IDF ensemble
 accuracy  0.9133
 precision 0.9133
 recall    0.9133
@@ -345,6 +358,8 @@ Report-ready generated artifacts:
 ```text
 outputs/predictions/final_report_tables.md
 outputs/predictions/teacher_test_step7_error_analysis.md
+outputs/predictions/round3_final_submission.json
+outputs/evaluation/round3_final_teacher_comparison.md
 ```
 
 The public repository does not commit `outputs/` files. The report-ready
@@ -365,6 +380,7 @@ PROJECT_REPORT.md
 ## Next Work Items
 
 1. Use `PROJECT_REPORT.md` as the single report-facing summary.
-2. Follow `docs/SECOND_ROUND_95_OPTIMIZATION_PLAN.md` for the second-round 95%
-   optimization pass.
+2. If further accuracy is needed, follow the data-first recommendations in
+   `docs/ROUND3_RESULTS_SUMMARY.md`: add old-prose human mirrors and
+   non-ChatGPT hard positives before training another branch.
 3. Add API serving only if required by the final submission format.

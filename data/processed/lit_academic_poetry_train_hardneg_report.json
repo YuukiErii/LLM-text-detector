@@ -1,0 +1,95 @@
+{
+  "train_input": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\lit_academic_poetry_train.jsonl",
+  "hard_negative_input": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\human_hard_negative_seed.jsonl",
+  "output": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\lit_academic_poetry_train_hardneg.jsonl",
+  "base_train": {
+    "num_samples": 13836,
+    "num_pair_ids": 7064,
+    "label_distribution": {
+      "0": 7064,
+      "1": 6772
+    },
+    "domain_distribution": {
+      "literature": 11195,
+      "academic": 1815,
+      "poetry": 826
+    },
+    "generator_distribution": {
+      "human": 7064,
+      "chatgpt": 1890,
+      "doubao": 1488,
+      "gemini": 1495,
+      "deepseek": 1899
+    },
+    "prompt_type_distribution": {
+      "human": 7064,
+      "style_imitation": 1818,
+      "literary_paraphrase": 1847,
+      "academic_paraphrase": 288,
+      "literary_modernize": 1829,
+      "academic_style_transfer": 289,
+      "poetry_style_transfer": 142,
+      "poetry_paraphrase": 132,
+      "academic_modernize": 290,
+      "poetry_modernize": 137
+    }
+  },
+  "hard_negatives_requested": 1000,
+  "hard_negatives_kept": 1000,
+  "hard_negatives_skipped": {
+    "duplicate_id": 0,
+    "duplicate_pair_id": 0,
+    "bad_label": 0
+  },
+  "hard_negative_distribution": {
+    "num_samples": 1000,
+    "num_pair_ids": 1000,
+    "label_distribution": {
+      "0": 1000
+    },
+    "domain_distribution": {
+      "poetry": 650,
+      "literature": 200,
+      "academic": 150
+    },
+    "generator_distribution": {
+      "human": 1000
+    },
+    "prompt_type_distribution": {
+      "human_hard_negative": 1000
+    }
+  },
+  "augmented_train": {
+    "num_samples": 14836,
+    "num_pair_ids": 8064,
+    "label_distribution": {
+      "0": 8064,
+      "1": 6772
+    },
+    "domain_distribution": {
+      "literature": 11395,
+      "academic": 1965,
+      "poetry": 1476
+    },
+    "generator_distribution": {
+      "human": 8064,
+      "chatgpt": 1890,
+      "doubao": 1488,
+      "gemini": 1495,
+      "deepseek": 1899
+    },
+    "prompt_type_distribution": {
+      "human": 7064,
+      "style_imitation": 1818,
+      "literary_paraphrase": 1847,
+      "academic_paraphrase": 288,
+      "literary_modernize": 1829,
+      "academic_style_transfer": 289,
+      "poetry_style_transfer": 142,
+      "poetry_paraphrase": 132,
+      "academic_modernize": 290,
+      "poetry_modernize": 137,
+      "human_hard_negative": 1000
+    }
+  }
+}

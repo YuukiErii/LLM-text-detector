@@ -1,0 +1,140 @@
+{
+  "train_input": "data\\processed\\lit_academic_poetry_train.jsonl",
+  "human_poetry_input": "data\\processed\\poetry_expansion_seed.jsonl",
+  "llm_poetry_input": "data\\processed\\llm_rewrite_poetry_expansion_chatgpt.jsonl",
+  "output": "data\\processed\\lit_academic_poetry_train_poetry_expansion.jsonl",
+  "base_train": {
+    "num_samples": 13836,
+    "num_pair_ids": 7064,
+    "label_distribution": {
+      "0": 7064,
+      "1": 6772
+    },
+    "domain_distribution": {
+      "literature": 11195,
+      "academic": 1815,
+      "poetry": 826
+    },
+    "generator_distribution": {
+      "human": 7064,
+      "chatgpt": 1890,
+      "doubao": 1488,
+      "gemini": 1495,
+      "deepseek": 1899
+    },
+    "prompt_type_distribution": {
+      "human": 7064,
+      "style_imitation": 1818,
+      "literary_paraphrase": 1847,
+      "academic_paraphrase": 288,
+      "literary_modernize": 1829,
+      "academic_style_transfer": 289,
+      "poetry_style_transfer": 142,
+      "poetry_paraphrase": 132,
+      "academic_modernize": 290,
+      "poetry_modernize": 137
+    }
+  },
+  "human_poetry_raw": {
+    "num_samples": 200,
+    "num_pair_ids": 200,
+    "label_distribution": {
+      "0": 200
+    },
+    "domain_distribution": {
+      "poetry": 200
+    },
+    "generator_distribution": {
+      "unknown": 200
+    },
+    "prompt_type_distribution": {
+      "human_poetry_expansion": 200
+    }
+  },
+  "llm_poetry_raw": {
+    "num_samples": 79,
+    "num_pair_ids": 79,
+    "label_distribution": {
+      "1": 79
+    },
+    "domain_distribution": {
+      "poetry": 79
+    },
+    "generator_distribution": {
+      "chatgpt": 79
+    },
+    "prompt_type_distribution": {
+      "poetry_modernize": 26,
+      "poetry_paraphrase": 27,
+      "poetry_style_transfer": 26
+    }
+  },
+  "human_poetry_kept": {
+    "num_samples": 200,
+    "num_pair_ids": 200,
+    "label_distribution": {
+      "0": 200
+    },
+    "domain_distribution": {
+      "poetry": 200
+    },
+    "generator_distribution": {
+      "human": 200
+    },
+    "prompt_type_distribution": {
+      "human_poetry_expansion": 200
+    }
+  },
+  "llm_poetry_kept": {
+    "num_samples": 79,
+    "num_pair_ids": 79,
+    "label_distribution": {
+      "1": 79
+    },
+    "domain_distribution": {
+      "poetry": 79
+    },
+    "generator_distribution": {
+      "chatgpt": 79
+    },
+    "prompt_type_distribution": {
+      "poetry_modernize": 26,
+      "poetry_paraphrase": 27,
+      "poetry_style_transfer": 26
+    }
+  },
+  "skipped": {},
+  "augmented_train": {
+    "num_samples": 14115,
+    "num_pair_ids": 7264,
+    "label_distribution": {
+      "0": 7264,
+      "1": 6851
+    },
+    "domain_distribution": {
+      "literature": 11195,
+      "academic": 1815,
+      "poetry": 1105
+    },
+    "generator_distribution": {
+      "human": 7264,
+      "chatgpt": 1969,
+      "doubao": 1488,
+      "gemini": 1495,
+      "deepseek": 1899
+    },
+    "prompt_type_distribution": {
+      "human": 7064,
+      "style_imitation": 1818,
+      "literary_paraphrase": 1847,
+      "academic_paraphrase": 288,
+      "literary_modernize": 1829,
+      "academic_style_transfer": 289,
+      "poetry_style_transfer": 168,
+      "poetry_paraphrase": 159,
+      "academic_modernize": 290,
+      "poetry_modernize": 163,
+      "human_poetry_expansion": 200
+    }
+  }
+}

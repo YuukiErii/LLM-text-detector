@@ -1,0 +1,420 @@
+{
+  "inputs": {
+    "base_train": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\lit_academic_poetry_train.jsonl",
+    "valid": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\lit_academic_poetry_valid.jsonl",
+    "internal_test": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\lit_academic_poetry_internal_test.jsonl",
+    "round2_train": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\round2_teacher_like_train.jsonl",
+    "round2_dev": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\round2_teacher_like_dev.jsonl",
+    "human_inputs": [
+      "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\round2_human_hardneg_source.jsonl",
+      "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\human_hard_negative_seed.jsonl",
+      "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\poetry_expansion_seed.jsonl",
+      "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\poetry_seed.jsonl",
+      "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\academic_seed.jsonl",
+      "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\human_seed_combined.jsonl"
+    ],
+    "llm_inputs": [
+      "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\round2_llm_hardpos_seed.jsonl",
+      "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\llm_rewrite_round2_chatgpt_hard_positive.jsonl",
+      "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\llm_rewrite_chatgpt_hard_positive.jsonl",
+      "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\llm_rewrite_poetry_expansion_chatgpt.jsonl",
+      "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\llm_rewrite_academic_chatgpt.jsonl",
+      "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\llm_rewrite_academic_deepseek.jsonl",
+      "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\llm_rewrite_academic_doubao.jsonl",
+      "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\llm_rewrite_academic_gemini.jsonl",
+      "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\llm_rewrite_poetry_chatgpt.jsonl",
+      "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\llm_rewrite_poetry_deepseek.jsonl",
+      "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\llm_rewrite_poetry_doubao.jsonl",
+      "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\llm_rewrite_poetry_gemini.jsonl"
+    ]
+  },
+  "outputs": {
+    "human_source": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\round3_hard_negative_mirror_source.jsonl",
+    "llm_source": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\round3_llm_hardpos_multi_generator_seed.jsonl",
+    "train": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\round3_precision_guard_train.jsonl",
+    "dev": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\round3_precision_guard_dev.jsonl",
+    "spotcheck": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\round3_precision_guard_spotcheck.jsonl",
+    "report": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\round3_precision_guard_report.json"
+  },
+  "seed": 20260521,
+  "dev_per_class": 520,
+  "human_candidates": {
+    "num_samples": 9762,
+    "num_pair_ids": 9762,
+    "label_distribution": {
+      "0": 9762
+    },
+    "domain_distribution": {
+      "poetry": 1515,
+      "literature": 6499,
+      "academic": 1748
+    },
+    "generator_distribution": {
+      "human": 9762
+    },
+    "bucket_distribution": {
+      "poetry_classical": 533,
+      "poetry_freeverse": 1091,
+      "literary_short_fragment": 1147,
+      "academic_formal": 935,
+      "general_prose": 5819,
+      "literary_old_prose": 237
+    },
+    "round3_tag_distribution": {
+      "human_poetry_classical_mirror": 533,
+      "human_poetry_freeverse_mirror": 1091,
+      "human_short_fragment_mirror": 1141,
+      "human_formal_academic_mirror": 1742,
+      "human_literary_old_prose_mirror": 237,
+      "human_ornate_literary_mirror": 5018
+    },
+    "source_stage_distribution": {
+      "round2_reused_pool": 2500,
+      "round3_poetry_mirror_pool": 615,
+      "round3_academic_mirror_pool": 948,
+      "round3_local_pool": 5699
+    },
+    "sample_weight_distribution": {
+      "2.0": 1624,
+      "1.7": 1384,
+      "1.4": 935,
+      "1.2": 801,
+      "1.5": 5018
+    },
+    "word_length": {
+      "min": 15,
+      "max": 399,
+      "mean": 98.0859455029707
+    }
+  },
+  "llm_candidates": {
+    "num_samples": 2872,
+    "num_pair_ids": 2871,
+    "label_distribution": {
+      "1": 2872
+    },
+    "domain_distribution": {
+      "literature": 656,
+      "academic": 1215,
+      "poetry": 1001
+    },
+    "generator_distribution": {
+      "chatgpt": 2106,
+      "deepseek": 519,
+      "doubao": 124,
+      "gemini": 123
+    },
+    "bucket_distribution": {
+      "literary_short_fragment": 603,
+      "poetry_classical": 274,
+      "poetry_freeverse": 763,
+      "general_prose": 558,
+      "academic_formal": 671,
+      "literary_old_prose": 3
+    },
+    "round3_tag_distribution": {
+      "llm_short_fragment_hardpos": 406,
+      "llm_archaic_poetry_hardpos": 504,
+      "llm_poetry_preserving_hardpos": 570,
+      "llm_natural_academic_hardpos": 1215,
+      "llm_conservative_literary_hardpos": 5,
+      "llm_old_fiction_style_hardpos": 172
+    },
+    "source_stage_distribution": {
+      "round2_reused_pool": 1593,
+      "round3_academic_mirror_pool": 868,
+      "round3_poetry_mirror_pool": 411
+    },
+    "sample_weight_distribution": {
+      "1.0": 2872
+    },
+    "word_length": {
+      "min": 17,
+      "max": 337,
+      "mean": 83.7284122562674
+    }
+  },
+  "guard_train_additions": {
+    "num_samples": 703,
+    "num_pair_ids": 545,
+    "label_distribution": {
+      "1": 159,
+      "0": 544
+    },
+    "domain_distribution": {
+      "academic": 158,
+      "poetry": 354,
+      "literature": 191
+    },
+    "generator_distribution": {
+      "deepseek": 1,
+      "human": 544,
+      "chatgpt": 158
+    },
+    "bucket_distribution": {
+      "general_prose": 81,
+      "poetry_freeverse": 259,
+      "poetry_classical": 118,
+      "literary_short_fragment": 166,
+      "academic_formal": 79
+    },
+    "round3_tag_distribution": {
+      "llm_natural_academic_hardpos": 33,
+      "human_poetry_freeverse_mirror": 216,
+      "llm_archaic_poetry_hardpos": 57,
+      "human_poetry_classical_mirror": 88,
+      "llm_poetry_preserving_hardpos": 18,
+      "human_formal_academic_mirror": 125,
+      "llm_short_fragment_hardpos": 34,
+      "human_short_fragment_mirror": 115,
+      "llm_old_fiction_style_hardpos": 16,
+      "llm_conservative_literary_hardpos": 1
+    },
+    "source_stage_distribution": {
+      "round3_academic_mirror_pool": 1,
+      "round3_poetry_mirror_pool": 133,
+      "round2_reused_pool": 569
+    },
+    "sample_weight_distribution": {
+      "1.0": 159,
+      "2.0": 304,
+      "1.2": 64,
+      "1.7": 115,
+      "1.4": 61
+    },
+    "word_length": {
+      "min": 15,
+      "max": 255,
+      "mean": 62.78093883357041
+    }
+  },
+  "round3_train": {
+    "num_samples": 17566,
+    "num_pair_ids": 9501,
+    "label_distribution": {
+      "0": 9482,
+      "1": 8084
+    },
+    "domain_distribution": {
+      "literature": 12452,
+      "academic": 2850,
+      "poetry": 2264
+    },
+    "generator_distribution": {
+      "human": 9482,
+      "chatgpt": 3201,
+      "doubao": 1488,
+      "gemini": 1495,
+      "deepseek": 1900
+    },
+    "bucket_distribution": {
+      "literary_short_fragment": 1793,
+      "general_prose": 11556,
+      "academic_formal": 1540,
+      "literary_old_prose": 280,
+      "poetry_classical": 715,
+      "poetry_freeverse": 1682
+    },
+    "round3_tag_distribution": {
+      "base_human": 7064,
+      "base_llm": 6772,
+      "classical_poetry_human": 257,
+      "chatgpt_archaic_poetry": 264,
+      "modern_freeverse_human": 470,
+      "chatgpt_poetry_conservative": 174,
+      "chatgpt_conservative_literary": 437,
+      "chatgpt_old_fiction": 17,
+      "chatgpt_natural_academic": 261,
+      "short_fragment_human": 531,
+      "formal_academic_human": 616,
+      "llm_natural_academic_hardpos": 33,
+      "human_poetry_freeverse_mirror": 216,
+      "llm_archaic_poetry_hardpos": 57,
+      "human_poetry_classical_mirror": 88,
+      "llm_poetry_preserving_hardpos": 18,
+      "human_formal_academic_mirror": 125,
+      "llm_short_fragment_hardpos": 34,
+      "human_short_fragment_mirror": 115,
+      "llm_old_fiction_style_hardpos": 16,
+      "llm_conservative_literary_hardpos": 1
+    },
+    "source_stage_distribution": {
+      "round2_train_or_base": 16863,
+      "round3_academic_mirror_pool": 1,
+      "round3_poetry_mirror_pool": 133,
+      "round2_reused_pool": 569
+    },
+    "sample_weight_distribution": {
+      "1.7": 1311,
+      "1.0": 8084,
+      "1.2": 5797,
+      "1.4": 901,
+      "2.0": 1473
+    },
+    "word_length": {
+      "min": 15,
+      "max": 491,
+      "mean": 102.22275987703519
+    }
+  },
+  "round3_dev": {
+    "num_samples": 564,
+    "num_pair_ids": 408,
+    "label_distribution": {
+      "0": 282,
+      "1": 282
+    },
+    "domain_distribution": {
+      "poetry": 252,
+      "academic": 113,
+      "literature": 199
+    },
+    "generator_distribution": {
+      "human": 282,
+      "chatgpt": 282
+    },
+    "bucket_distribution": {
+      "poetry_freeverse": 173,
+      "poetry_classical": 95,
+      "general_prose": 46,
+      "literary_short_fragment": 182,
+      "academic_formal": 67,
+      "literary_old_prose": 1
+    },
+    "round3_tag_distribution": {
+      "human_poetry_freeverse_mirror": 101,
+      "llm_archaic_poetry_hardpos": 98,
+      "human_formal_academic_mirror": 58,
+      "llm_short_fragment_hardpos": 82,
+      "human_poetry_classical_mirror": 50,
+      "llm_natural_academic_hardpos": 54,
+      "llm_poetry_preserving_hardpos": 24,
+      "llm_old_fiction_style_hardpos": 24,
+      "human_short_fragment_mirror": 72,
+      "human_literary_old_prose_mirror": 1
+    },
+    "source_stage_distribution": {
+      "round3_poetry_mirror_pool": 67,
+      "round2_reused_pool": 497
+    },
+    "sample_weight_distribution": {
+      "2.0": 151,
+      "1.0": 282,
+      "1.2": 24,
+      "1.7": 73,
+      "1.4": 34
+    },
+    "word_length": {
+      "min": 18,
+      "max": 267,
+      "mean": 61.329787234042556
+    }
+  },
+  "round2_dev_reference": {
+    "num_samples": 1065,
+    "num_pair_ids": 645,
+    "label_distribution": {
+      "0": 626,
+      "1": 439
+    },
+    "domain_distribution": {
+      "poetry": 406,
+      "literature": 389,
+      "academic": 270
+    },
+    "generator_distribution": {
+      "human": 626,
+      "chatgpt": 439
+    },
+    "bucket_distribution": {
+      "poetry_classical": 157,
+      "poetry_freeverse": 288,
+      "literary_short_fragment": 347,
+      "academic_formal": 146,
+      "general_prose": 126,
+      "literary_old_prose": 1
+    },
+    "round3_tag_distribution": {
+      "unknown": 1065
+    },
+    "source_stage_distribution": {
+      "unknown": 1065
+    },
+    "sample_weight_distribution": {
+      "1.0": 1065
+    },
+    "word_length": {
+      "min": 15,
+      "max": 267,
+      "mean": 64.96056338028168
+    }
+  },
+  "dedup_skipped": {
+    "human": {
+      "duplicate_id": 2363,
+      "forbidden_id": 2103,
+      "duplicate_or_near_duplicate_text": 2
+    },
+    "llm": {
+      "duplicate_id": 282,
+      "forbidden_id": 309,
+      "forbidden_pair": 2
+    }
+  },
+  "acceptance": {
+    "hard_human_negatives": 9762,
+    "hard_llm_positives": 2872,
+    "round3_dev_rows": 564,
+    "round3_dev_min_class_share": 0.5,
+    "bucket_label_coverage": {
+      "academic_formal": {
+        "human": 34,
+        "llm": 33,
+        "has_both_labels": true
+      },
+      "general_prose": {
+        "human": 24,
+        "llm": 22,
+        "has_both_labels": true
+      },
+      "literary_old_prose": {
+        "human": 1,
+        "llm": 0,
+        "has_both_labels": false
+      },
+      "literary_short_fragment": {
+        "human": 72,
+        "llm": 110,
+        "has_both_labels": true
+      },
+      "poetry_classical": {
+        "human": 50,
+        "llm": 45,
+        "has_both_labels": true
+      },
+      "poetry_freeverse": {
+        "human": 101,
+        "llm": 72,
+        "has_both_labels": true
+      }
+    },
+    "high_risk_buckets_with_both_labels": {
+      "academic_formal": true,
+      "general_prose": true,
+      "literary_old_prose": false,
+      "literary_short_fragment": true,
+      "poetry_classical": true,
+      "poetry_freeverse": true
+    },
+    "meets_plan_minimums": {
+      "hard_human_negatives_at_least_1800": true,
+      "hard_llm_positives_at_least_1500_if_possible": true,
+      "dev_min_class_share_at_least_45_percent": true,
+      "all_observed_high_risk_dev_buckets_have_both_labels": false
+    }
+  },
+  "notes": [
+    "Old-prose human mirror coverage is below the ideal 400-600 target; current local sources are limited for this bucket.",
+    "Some observed dev buckets do not have both labels; use this report before interpreting per-bucket FP/FN."
+  ]
+}

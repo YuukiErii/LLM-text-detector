@@ -1,0 +1,100 @@
+{
+  "total_samples": 17295,
+  "label_distribution": {
+    "0": 8830,
+    "1": 8465
+  },
+  "domain_distribution": {
+    "literature": 14008,
+    "academic": 2292,
+    "poetry": 995
+  },
+  "generator_distribution": {
+    "human": 8830,
+    "deepseek": 2367,
+    "doubao": 1857,
+    "chatgpt": 2366,
+    "gemini": 1875
+  },
+  "source_distribution_top50": {
+    "deepseek": 2367,
+    "chatgpt": 2366,
+    "gemini": 1875,
+    "doubao": 1857,
+    "acl_ocl:2020": 1200,
+    "gutenberg:dickens_oliver_twist": 1049,
+    "gutenberg:hardy_return_of_the_native": 974,
+    "gutenberg:dickens_a_tale_of_two_cities": 932,
+    "gutenberg:hardy_far_from_the_madding_crowd": 922,
+    "gutenberg:london_martin_eden": 817,
+    "gutenberg:wells_mr_britling": 795,
+    "gutenberg:twain_connecticut_yankee": 664,
+    "gutenberg:shelley_frankenstein": 543,
+    "gutenberg:ohenry_the_four_million": 402,
+    "gutenberg_poetry:12242": 84,
+    "gutenberg_poetry:1279": 84,
+    "gutenberg_poetry:1322": 83,
+    "gutenberg_poetry:1934": 83,
+    "gutenberg_poetry:23684": 83,
+    "gutenberg_poetry:4800": 83,
+    "gutenberg:harte_devils_ford": 32
+  },
+  "prompt_type_distribution": {
+    "human": 8830,
+    "literary_modernize": 2297,
+    "literary_paraphrase": 2292,
+    "style_imitation": 2289,
+    "academic_modernize": 362,
+    "academic_style_transfer": 365,
+    "academic_paraphrase": 365,
+    "poetry_style_transfer": 165,
+    "poetry_modernize": 166,
+    "poetry_paraphrase": 164
+  },
+  "domain_label_distribution": {
+    "literature|0": 7130,
+    "academic|0": 1200,
+    "poetry|0": 500,
+    "literature|1": 6878,
+    "academic|1": 1092,
+    "poetry|1": 495
+  },
+  "domain_generator_distribution": {
+    "literature|human": 7130,
+    "academic|human": 1200,
+    "poetry|human": 500,
+    "literature|deepseek": 1730,
+    "literature|doubao": 1698,
+    "literature|chatgpt": 1728,
+    "literature|gemini": 1722,
+    "academic|chatgpt": 438,
+    "academic|deepseek": 438,
+    "academic|gemini": 107,
+    "academic|doubao": 109,
+    "poetry|chatgpt": 200,
+    "poetry|deepseek": 199,
+    "poetry|gemini": 46,
+    "poetry|doubao": 50
+  },
+  "pair_stats": {
+    "total_unique_pair_ids": 8830,
+    "pairs_with_human": 8830,
+    "pairs_with_llm": 8465,
+    "pairs_with_both": 8465,
+    "pairs_with_multiple_domains": 0
+  },
+  "word_length": {
+    "min": 21,
+    "max": 491,
+    "mean": 111.58115062156692
+  },
+  "filtered_samples": {
+    "llm:llm_rewrite_deepseek.jsonl:possibly_truncated_text": 51,
+    "llm:llm_rewrite_doubao.jsonl:possibly_truncated_text": 67,
+    "llm:llm_rewrite_doubao.jsonl:quality_failed": 25,
+    "llm:llm_rewrite_chatgpt.jsonl:possibly_truncated_text": 55,
+    "llm:llm_rewrite_academic_deepseek.jsonl:quality_failed": 1,
+    "llm:llm_rewrite_academic_doubao.jsonl:possibly_truncated_text": 1,
+    "llm:llm_rewrite_poetry_deepseek.jsonl:quality_failed": 1
+  }
+}

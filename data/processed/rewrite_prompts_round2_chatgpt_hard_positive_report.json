@@ -1,0 +1,40 @@
+{
+  "input": "data\\processed\\round2_human_hardneg_source.jsonl",
+  "output": "data\\processed\\rewrite_prompts_round2_chatgpt_hard_positive.jsonl",
+  "quotas": {
+    "chatgpt_conservative_literary": 450,
+    "chatgpt_old_fiction": 350,
+    "chatgpt_archaic_poetry": 450,
+    "chatgpt_poetry_freeverse": 250,
+    "chatgpt_natural_academic": 500
+  },
+  "seed": 20260521,
+  "available_source_buckets": {
+    "chatgpt_archaic_poetry": 339,
+    "chatgpt_poetry_freeverse": 643,
+    "chatgpt_conservative_literary": 718,
+    "chatgpt_natural_academic": 800
+  },
+  "tasks": {
+    "num_rows": 2000,
+    "domain_distribution": {
+      "literature": 836,
+      "poetry": 664,
+      "academic": 500
+    },
+    "prompt_type_distribution": {
+      "chatgpt_conservative_literary": 450,
+      "chatgpt_old_fiction": 350,
+      "chatgpt_archaic_poetry": 450,
+      "chatgpt_poetry_freeverse": 250,
+      "chatgpt_natural_academic": 500
+    },
+    "source_bucket_distribution": {
+      "literary_short_fragment": 804,
+      "poetry_freeverse": 550,
+      "poetry_classical": 150,
+      "academic_formal": 253,
+      "general_prose": 243
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "total_samples": 8830,
+  "invalid_samples_filtered": 0,
+  "duplicate_id_count": 0,
+  "duplicate_pair_id_count": 0,
+  "domain_distribution": {
+    "literature": 7130,
+    "academic": 1200,
+    "poetry": 500
+  },
+  "source_distribution_top50": {
+    "acl_ocl:2020": 1200,
+    "gutenberg:dickens_oliver_twist": 1049,
+    "gutenberg:hardy_return_of_the_native": 974,
+    "gutenberg:dickens_a_tale_of_two_cities": 932,
+    "gutenberg:hardy_far_from_the_madding_crowd": 922,
+    "gutenberg:london_martin_eden": 817,
+    "gutenberg:wells_mr_britling": 795,
+    "gutenberg:twain_connecticut_yankee": 664,
+    "gutenberg:shelley_frankenstein": 543,
+    "gutenberg:ohenry_the_four_million": 402,
+    "gutenberg_poetry:12242": 84,
+    "gutenberg_poetry:1279": 84,
+    "gutenberg_poetry:1322": 83,
+    "gutenberg_poetry:1934": 83,
+    "gutenberg_poetry:23684": 83,
+    "gutenberg_poetry:4800": 83,
+    "gutenberg:harte_devils_ford": 32
+  },
+  "word_count": {
+    "min": 21,
+    "max": 399,
+    "mean": 109.19943374858437
+  }
+}

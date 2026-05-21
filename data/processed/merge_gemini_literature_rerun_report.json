@@ -1,0 +1,143 @@
+{
+  "v1_output_path": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\llm_rewrite_gemini.jsonl",
+  "rerun_prompts_path": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\rewrite_prompts_gemini_literature_rerun.jsonl",
+  "rerun_output_path": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\llm_rewrite_gemini_rerun.jsonl",
+  "clean_output_path": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\llm_rewrite_gemini_clean.jsonl",
+  "total_v1_samples": 1763,
+  "total_v1_unique_task_ids": 1763,
+  "total_rerun_prompt_task_ids": 152,
+  "total_rerun_output_samples": 90,
+  "total_rerun_unique_task_ids": 90,
+  "total_clean_samples": 1722,
+  "kept_v1_count": 1632,
+  "replaced_by_rerun_count": 73,
+  "added_rerun_not_in_v1_count": 17,
+  "missing_rerun_output_count": 58,
+  "invalid_rerun_output_count": 0,
+  "invalid_v1_output_count": 0,
+  "dropped_rerun_task_count": 58,
+  "dropped_task_ids_count": 58,
+  "missing_rerun_task_ids_sample": [
+    "rewrite_000717",
+    "rewrite_000270",
+    "rewrite_000715",
+    "rewrite_001419",
+    "rewrite_000961",
+    "rewrite_002547",
+    "rewrite_002896",
+    "rewrite_002039",
+    "rewrite_002326",
+    "rewrite_002279",
+    "rewrite_002870",
+    "rewrite_002904",
+    "rewrite_002905",
+    "rewrite_002908",
+    "rewrite_003875",
+    "rewrite_003109",
+    "rewrite_003885",
+    "rewrite_004139",
+    "rewrite_003951",
+    "rewrite_004152",
+    "rewrite_005003",
+    "rewrite_004727",
+    "rewrite_004944",
+    "rewrite_005088",
+    "rewrite_005456",
+    "rewrite_005462",
+    "rewrite_006139",
+    "rewrite_006086",
+    "rewrite_005931",
+    "rewrite_005763"
+  ],
+  "invalid_rerun_task_ids_sample": [],
+  "invalid_v1_task_ids_sample": [],
+  "dropped_task_ids_sample": [
+    "rewrite_000270",
+    "rewrite_000715",
+    "rewrite_000717",
+    "rewrite_000961",
+    "rewrite_001419",
+    "rewrite_002039",
+    "rewrite_002279",
+    "rewrite_002326",
+    "rewrite_002547",
+    "rewrite_002870",
+    "rewrite_002896",
+    "rewrite_002904",
+    "rewrite_002905",
+    "rewrite_002908",
+    "rewrite_003109",
+    "rewrite_003875",
+    "rewrite_003885",
+    "rewrite_003951",
+    "rewrite_004139",
+    "rewrite_004152",
+    "rewrite_004727",
+    "rewrite_004944",
+    "rewrite_005003",
+    "rewrite_005088",
+    "rewrite_005456",
+    "rewrite_005462",
+    "rewrite_005674",
+    "rewrite_005678",
+    "rewrite_005714",
+    "rewrite_005737"
+  ],
+  "validation_settings": {
+    "min_length_ratio": 0.55,
+    "max_jaccard": 0.82,
+    "require_quality_pass": true,
+    "reject_truncated": true
+  },
+  "clean_summary": {
+    "num_samples": 1722,
+    "label_distribution": {
+      "1": 1722
+    },
+    "generator_distribution": {
+      "gemini": 1722
+    },
+    "source_distribution": {
+      "gemini": 1722
+    },
+    "model_distribution": {
+      "gemini-3-flash-preview": 1722
+    },
+    "domain_distribution": {
+      "literature": 1722
+    },
+    "prompt_type_distribution": {
+      "style_imitation": 582,
+      "literary_paraphrase": 610,
+      "literary_modernize": 530
+    },
+    "quality_issue_distribution": {
+      "no_issue": 1722
+    },
+    "finish_reason_distribution": {
+      "unknown": 1632,
+      "stop": 90
+    },
+    "source_word_count": {
+      "min": 50,
+      "max": 390,
+      "mean": 106.43728222996516
+    },
+    "rewrite_word_count": {
+      "min": 43,
+      "max": 374,
+      "mean": 106.72357723577235
+    },
+    "length_ratio": {
+      "min": 0.5818181818181818,
+      "max": 1.4936708860759493,
+      "mean": 1.0244277530809365
+    },
+    "lexical_jaccard": {
+      "min": 0.05660377358490566,
+      "max": 0.6197183098591549,
+      "mean": 0.2755399127956268
+    },
+    "possibly_truncated_by_merge_check": 0
+  }
+}

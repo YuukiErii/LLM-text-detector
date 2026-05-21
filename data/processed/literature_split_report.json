@@ -1,0 +1,148 @@
+{
+  "input_path": "data\\processed\\full_dataset_literature.jsonl",
+  "train_ratio": 0.8,
+  "valid_ratio": 0.1,
+  "test_ratio": 0.1,
+  "seed": 42,
+  "total_samples": 14008,
+  "total_pair_ids": 7130,
+  "pair_signature_distribution": {
+    "human_and_llm": 6878,
+    "human_only": 252
+  },
+  "train": {
+    "num_samples": 11205,
+    "num_pair_ids": 5703,
+    "label_distribution": {
+      "0": 5703,
+      "1": 5502
+    },
+    "generator_distribution": {
+      "human": 5703,
+      "doubao": 1328,
+      "gemini": 1375,
+      "deepseek": 1401,
+      "chatgpt": 1398
+    },
+    "source_distribution": {
+      "gutenberg:twain_connecticut_yankee": 534,
+      "doubao": 1328,
+      "gutenberg:shelley_frankenstein": 430,
+      "gutenberg:london_martin_eden": 655,
+      "gemini": 1375,
+      "deepseek": 1401,
+      "gutenberg:hardy_return_of_the_native": 788,
+      "chatgpt": 1398,
+      "gutenberg:wells_mr_britling": 643,
+      "gutenberg:hardy_far_from_the_madding_crowd": 711,
+      "gutenberg:dickens_oliver_twist": 850,
+      "gutenberg:ohenry_the_four_million": 320,
+      "gutenberg:dickens_a_tale_of_two_cities": 746,
+      "gutenberg:harte_devils_ford": 26
+    },
+    "prompt_type_distribution": {
+      "human": 5703,
+      "literary_paraphrase": 1851,
+      "literary_modernize": 1840,
+      "style_imitation": 1811
+    },
+    "domain_distribution": {
+      "literature": 11205
+    },
+    "word_length": {
+      "min": 38,
+      "max": 491,
+      "mean": 111.47032574743419
+    }
+  },
+  "valid": {
+    "num_samples": 1399,
+    "num_pair_ids": 712,
+    "label_distribution": {
+      "0": 712,
+      "1": 687
+    },
+    "generator_distribution": {
+      "human": 712,
+      "chatgpt": 168,
+      "doubao": 177,
+      "deepseek": 174,
+      "gemini": 168
+    },
+    "source_distribution": {
+      "gutenberg:twain_connecticut_yankee": 61,
+      "chatgpt": 168,
+      "gutenberg:shelley_frankenstein": 53,
+      "gutenberg:dickens_a_tale_of_two_cities": 80,
+      "gutenberg:wells_mr_britling": 86,
+      "doubao": 177,
+      "gutenberg:ohenry_the_four_million": 42,
+      "deepseek": 174,
+      "gutenberg:hardy_far_from_the_madding_crowd": 117,
+      "gemini": 168,
+      "gutenberg:dickens_oliver_twist": 90,
+      "gutenberg:london_martin_eden": 85,
+      "gutenberg:hardy_return_of_the_native": 94,
+      "gutenberg:harte_devils_ford": 4
+    },
+    "prompt_type_distribution": {
+      "human": 712,
+      "literary_modernize": 230,
+      "style_imitation": 246,
+      "literary_paraphrase": 211
+    },
+    "domain_distribution": {
+      "literature": 1399
+    },
+    "word_length": {
+      "min": 43,
+      "max": 387,
+      "mean": 108.94781987133666
+    }
+  },
+  "internal_test": {
+    "num_samples": 1404,
+    "num_pair_ids": 715,
+    "label_distribution": {
+      "0": 715,
+      "1": 689
+    },
+    "generator_distribution": {
+      "human": 715,
+      "gemini": 179,
+      "doubao": 193,
+      "chatgpt": 162,
+      "deepseek": 155
+    },
+    "source_distribution": {
+      "gutenberg:dickens_oliver_twist": 109,
+      "gemini": 179,
+      "gutenberg:hardy_far_from_the_madding_crowd": 94,
+      "doubao": 193,
+      "gutenberg:hardy_return_of_the_native": 92,
+      "gutenberg:london_martin_eden": 77,
+      "chatgpt": 162,
+      "gutenberg:wells_mr_britling": 66,
+      "deepseek": 155,
+      "gutenberg:shelley_frankenstein": 60,
+      "gutenberg:ohenry_the_four_million": 40,
+      "gutenberg:dickens_a_tale_of_two_cities": 106,
+      "gutenberg:twain_connecticut_yankee": 69,
+      "gutenberg:harte_devils_ford": 2
+    },
+    "prompt_type_distribution": {
+      "human": 715,
+      "literary_modernize": 227,
+      "style_imitation": 232,
+      "literary_paraphrase": 230
+    },
+    "domain_distribution": {
+      "literature": 1404
+    },
+    "word_length": {
+      "min": 41,
+      "max": 453,
+      "mean": 111.35754985754986
+    }
+  }
+}

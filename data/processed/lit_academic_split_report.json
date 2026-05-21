@@ -1,0 +1,163 @@
+{
+  "input_path": "data\\processed\\full_dataset_lit_academic.jsonl",
+  "train_ratio": 0.8,
+  "valid_ratio": 0.1,
+  "test_ratio": 0.1,
+  "seed": 42,
+  "total_samples": 16300,
+  "total_pair_ids": 8330,
+  "pair_signature_distribution": {
+    "human_and_llm": 7970,
+    "human_only": 360
+  },
+  "train": {
+    "num_samples": 13040,
+    "num_pair_ids": 6664,
+    "label_distribution": {
+      "0": 6664,
+      "1": 6376
+    },
+    "generator_distribution": {
+      "human": 6664,
+      "chatgpt": 1741,
+      "deepseek": 1759,
+      "gemini": 1458,
+      "doubao": 1418
+    },
+    "source_distribution": {
+      "gutenberg:dickens_a_tale_of_two_cities": 744,
+      "chatgpt": 1741,
+      "gutenberg:london_martin_eden": 652,
+      "deepseek": 1759,
+      "gutenberg:dickens_oliver_twist": 854,
+      "gemini": 1458,
+      "gutenberg:twain_connecticut_yankee": 531,
+      "gutenberg:wells_mr_britling": 643,
+      "doubao": 1418,
+      "gutenberg:hardy_return_of_the_native": 786,
+      "gutenberg:ohenry_the_four_million": 320,
+      "gutenberg:shelley_frankenstein": 430,
+      "acl_ocl:2020": 966,
+      "gutenberg:hardy_far_from_the_madding_crowd": 712,
+      "gutenberg:harte_devils_ford": 26
+    },
+    "prompt_type_distribution": {
+      "human": 6664,
+      "literary_modernize": 1834,
+      "style_imitation": 1826,
+      "literary_paraphrase": 1838,
+      "academic_modernize": 292,
+      "academic_paraphrase": 293,
+      "academic_style_transfer": 293
+    },
+    "domain_distribution": {
+      "literature": 11196,
+      "academic": 1844
+    },
+    "word_length": {
+      "min": 38,
+      "max": 491,
+      "mean": 115.87745398773006
+    }
+  },
+  "valid": {
+    "num_samples": 1630,
+    "num_pair_ids": 833,
+    "label_distribution": {
+      "0": 833,
+      "1": 797
+    },
+    "generator_distribution": {
+      "human": 833,
+      "doubao": 187,
+      "chatgpt": 204,
+      "gemini": 183,
+      "deepseek": 223
+    },
+    "source_distribution": {
+      "gutenberg:wells_mr_britling": 86,
+      "doubao": 187,
+      "gutenberg:shelley_frankenstein": 51,
+      "chatgpt": 204,
+      "gutenberg:twain_connecticut_yankee": 64,
+      "gutenberg:dickens_oliver_twist": 89,
+      "gemini": 183,
+      "gutenberg:hardy_return_of_the_native": 93,
+      "deepseek": 223,
+      "gutenberg:dickens_a_tale_of_two_cities": 84,
+      "gutenberg:hardy_far_from_the_madding_crowd": 118,
+      "acl_ocl:2020": 112,
+      "gutenberg:ohenry_the_four_million": 45,
+      "gutenberg:london_martin_eden": 87,
+      "gutenberg:harte_devils_ford": 4
+    },
+    "prompt_type_distribution": {
+      "human": 833,
+      "literary_paraphrase": 218,
+      "style_imitation": 233,
+      "academic_style_transfer": 36,
+      "literary_modernize": 242,
+      "academic_modernize": 34,
+      "academic_paraphrase": 34
+    },
+    "domain_distribution": {
+      "literature": 1414,
+      "academic": 216
+    },
+    "word_length": {
+      "min": 43,
+      "max": 387,
+      "mean": 113.39263803680981
+    }
+  },
+  "internal_test": {
+    "num_samples": 1630,
+    "num_pair_ids": 833,
+    "label_distribution": {
+      "0": 833,
+      "1": 797
+    },
+    "generator_distribution": {
+      "human": 833,
+      "chatgpt": 221,
+      "gemini": 188,
+      "doubao": 202,
+      "deepseek": 186
+    },
+    "source_distribution": {
+      "gutenberg:hardy_return_of_the_native": 95,
+      "chatgpt": 221,
+      "acl_ocl:2020": 122,
+      "gutenberg:dickens_oliver_twist": 106,
+      "gemini": 188,
+      "gutenberg:hardy_far_from_the_madding_crowd": 92,
+      "doubao": 202,
+      "gutenberg:twain_connecticut_yankee": 69,
+      "deepseek": 186,
+      "gutenberg:dickens_a_tale_of_two_cities": 104,
+      "gutenberg:london_martin_eden": 78,
+      "gutenberg:wells_mr_britling": 66,
+      "gutenberg:shelley_frankenstein": 62,
+      "gutenberg:ohenry_the_four_million": 37,
+      "gutenberg:harte_devils_ford": 2
+    },
+    "prompt_type_distribution": {
+      "human": 833,
+      "style_imitation": 230,
+      "academic_style_transfer": 36,
+      "literary_modernize": 221,
+      "literary_paraphrase": 236,
+      "academic_modernize": 36,
+      "academic_paraphrase": 38
+    },
+    "domain_distribution": {
+      "literature": 1398,
+      "academic": 232
+    },
+    "word_length": {
+      "min": 41,
+      "max": 404,
+      "mean": 114.71656441717792
+    }
+  }
+}
