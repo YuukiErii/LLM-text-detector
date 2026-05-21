@@ -78,14 +78,9 @@ Current processed data includes:
 | Final ensemble inference | Implemented in `src/evaluation/predict_ensemble.py` |
 | API | Optional future serving work |
 
-For detailed handoff notes, read:
-
-- `NLG_LLM_Detector_Task_Outline.md`
-- `NLG_LLM_Detector_Progress_and_Plan_Updated_2026-05-20.md`
-- `RESULTS_AND_OPTIMIZATION_PLAN.md`
-- `FINAL_TEACHER_TEST_REPORT_2026-05-21.md`
-- `NLG_LLM_Detector_Holistic_Optimization_Plan_2026-05-21.md`
-- `NLG_LLM_Detector_Optimization_Work_Log_2026-05-21.md`
+For detailed handoff notes, read `PROJECT_REPORT.md` first. For the second
+round 95% target, read `docs/SECOND_ROUND_95_OPTIMIZATION_PLAN.md`. Older
+drafts, plans, and full work logs are preserved in `docs/archive/`.
 
 ## Repository Layout
 
@@ -98,6 +93,9 @@ For detailed handoff notes, read:
 |   |-- figures/             # Ignored generated figures
 |   |-- models/              # Ignored trained artifacts
 |   `-- predictions/         # Ignored prediction outputs
+|-- docs/
+|   |-- SECOND_ROUND_95_OPTIMIZATION_PLAN.md
+|   `-- archive/             # Preserved historical markdown drafts and logs
 |-- src/
 |   |-- app/                 # Future FastAPI app
 |   |-- data/                # Data collection, prompt, rewrite, QC, split scripts
@@ -105,7 +103,7 @@ For detailed handoff notes, read:
 |   |-- features/            # Future feature utilities
 |   `-- models/              # Baseline and future neural training scripts
 |-- requirements.txt
-|-- RESULTS_AND_OPTIMIZATION_PLAN.md
+|-- PROJECT_REPORT.md
 `-- README.md
 ```
 
@@ -350,11 +348,10 @@ outputs/predictions/teacher_test_step7_error_analysis.md
 ```
 
 The public repository does not commit `outputs/` files. The report-ready
-metrics and the detailed optimization roadmap are summarized in:
+metrics and the detailed optimization roadmap are consolidated in:
 
 ```text
-RESULTS_AND_OPTIMIZATION_PLAN.md
-FINAL_TEACHER_TEST_REPORT_2026-05-21.md
+PROJECT_REPORT.md
 ```
 
 ## Data Rules
@@ -367,7 +364,7 @@ FINAL_TEACHER_TEST_REPORT_2026-05-21.md
 
 ## Next Work Items
 
-1. Move the tables and error-analysis observations into the final written report.
-2. If there is time for another modeling pass, prioritize hard human negatives,
-   ChatGPT-style rewrites, poetry expansion, and validation-only calibration.
+1. Use `PROJECT_REPORT.md` as the single report-facing summary.
+2. Follow `docs/SECOND_ROUND_95_OPTIMIZATION_PLAN.md` for the second-round 95%
+   optimization pass.
 3. Add API serving only if required by the final submission format.
