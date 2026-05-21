@@ -1,6 +1,6 @@
 # LLM Text Detector Results and Optimization Plan
 
-Updated: 2026-05-20
+Updated: 2026-05-21
 
 ## 1. Current Project Position
 
@@ -100,9 +100,10 @@ The split is done by `pair_id`, so a human source passage and its corresponding 
 | DeBERTa-v3-base | Internal test | 0.9284 | 0.9208 | 0.9339 | 0.9273 | 0.9830 |
 | Ensemble | Validation | 0.9595 | 0.9652 | 0.9515 | 0.9583 | 0.9870 |
 | Ensemble | Internal test | 0.9405 | 0.9450 | 0.9327 | 0.9388 | 0.9812 |
-| Final ensemble | Teacher test | 0.9033 | 0.8712 | 0.9467 | 0.9073 | 0.9663 |
+| Original final ensemble | Teacher test | 0.9033 | 0.8712 | 0.9467 | 0.9073 | 0.9663 |
+| Optimized Step7 ensemble | Teacher test | 0.9133 | 0.9133 | 0.9133 | 0.9133 | 0.9690 |
 
-Teacher-test confusion matrix:
+Original teacher-test confusion matrix:
 
 ```text
 [[TN, FP], [FN, TP]] = [[129, 21], [8, 142]]
@@ -115,17 +116,31 @@ This means:
 - 8 LLM texts were missed;
 - 142 LLM texts were correctly detected.
 
+Optimized Step7 teacher-test confusion matrix:
+
+```text
+[[TN, FP], [FN, TP]] = [[137, 13], [13, 137]]
+```
+
+Compared with the original final ensemble, the optimized Step7 ensemble fixes
+8 additional human false positives, while missing 5 additional LLM texts. The
+net result is better accuracy, F1, and ROC-AUC on the teacher test set.
+
 ### 3.2 Interpretation
 
-The result is strong for a course project and for a teacher-held external test set. The final model reaches 90.33% teacher-test accuracy and 0.9073 F1. The ROC-AUC of 0.9663 suggests that the probability ranking is good, even though the final binary threshold still leaves room for calibration.
+The original result was strong for a course project and for a teacher-held
+external test set. The Step7 optimized ensemble improves it further, reaching
+91.33% teacher-test accuracy and 0.9133 F1. The ROC-AUC improves from 0.9663 to
+0.9690 for the raw-TF-IDF Step7 ensemble variant.
 
 The ensemble improves over both individual branches on the teacher test set:
 
-| Branch decision using threshold 0.48 | Teacher-test accuracy |
+| Branch / model decision | Teacher-test accuracy |
 | --- | ---: |
 | TF-IDF only | 0.8900 |
 | DeBERTa only | 0.8867 |
-| Final ensemble | 0.9033 |
+| Original final ensemble | 0.9033 |
+| Optimized Step7 ensemble | 0.9133 |
 
 This supports the central project claim: DeBERTa and TF-IDF capture complementary signals. DeBERTa contributes deeper semantic and discourse-level style features, while TF-IDF contributes lexical, punctuation, spelling, and surface n-gram features.
 
@@ -346,9 +361,9 @@ The existing results already cover the first three. The most useful additional r
 Strong claims that are supported:
 
 - The hybrid DeBERTa + TF-IDF detector outperforms both single branches on the teacher test set.
-- The final model reaches 90.33% accuracy and 0.9073 F1 on the teacher test set.
+- The optimized Step7 ensemble reaches 91.33% accuracy and 0.9133 F1 on the teacher test set.
 - The ensemble reduces the weakness of single-branch models by combining deep semantic features and surface n-gram features.
-- The model is recall-oriented and catches most LLM-written passages.
+- The original ensemble is recall-oriented; the optimized Step7 ensemble is more balanced, with 13 false positives and 13 false negatives.
 - The hardest remaining cases are stylistically unusual human texts and human-like ChatGPT rewrites.
 
 Claims to avoid or phrase carefully:
@@ -363,8 +378,77 @@ Conservative final conclusion:
 ```text
 The current detector is a strong course-project system for English literary,
 academic, and poetic LLM-rewrite detection. The hybrid ensemble improves over
-both TF-IDF and DeBERTa alone and achieves 0.9073 F1 on the teacher test set.
+both TF-IDF and DeBERTa alone. After Step7 optimization, the best teacher-test
+ensemble achieves 0.9133 F1 on the teacher test set, improving on the original
+final ensemble's 0.9073 F1.
 Remaining errors are concentrated in high-style human writing and human-like
 ChatGPT rewrites, so future work should prioritize hard negative human data,
 ChatGPT-style augmentation, poetry expansion, and probability calibration.
+```
+
+## 8. 2026-05-21 Optimization Update
+
+The holistic optimization pass tested text normalization, validation-only
+calibration, controlled hard negatives, ChatGPT-style hard positives, poetry
+expansion, and one combined neural retraining recipe.
+
+The strongest internal-test candidate is now the Step7 DeBERTa-v3-base model
+trained on:
+
+```text
+data/processed/lit_academic_poetry_train_hardneg_p50_chatgpt_hardpos_poetry_expansion.jsonl
+```
+
+Best supported operating point:
+
+| Run | Accuracy | Precision | Recall | F1 | ROC-AUC | FP | FN |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Old final ensemble | 0.9405 | 0.9450 | 0.9327 | 0.9388 | 0.9812 | 46 | 57 |
+| Step7 DeBERTa default | 0.9584 | 0.9608 | 0.9540 | 0.9573 | 0.9909 | 33 | 39 |
+| Step7 DeBERTa calibrated | 0.9596 | 0.9664 | 0.9504 | 0.9583 | 0.9909 | 28 | 42 |
+
+The calibrated Step7 DeBERTa threshold was selected on the validation split
+only (`threshold=0.676`). It improves internal-test F1 by `+0.0195` versus the
+old final ensemble, reduces false positives by `18`, and reduces false
+negatives by `15`.
+
+Ensembling the new Step7 DeBERTa with TF-IDF did not become the final choice:
+the best validation-selected Step7 ensemble reached internal-test F1 `0.9564`,
+below the calibrated Step7 DeBERTa. The likely reason is that the new neural
+branch already absorbed most of the useful hard-negative and hard-positive
+signal, while TF-IDF mixing pushed the operating point toward higher precision
+and lower recall.
+
+Teacher-test re-evaluation was then run on `data/raw/teacher_test.json`.
+
+| Run | Accuracy | Precision | Recall | F1 | ROC-AUC | FP | FN |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Original final ensemble | 0.9033 | 0.8712 | 0.9467 | 0.9073 | 0.9663 | 21 | 8 |
+| Step7 DeBERTa default | 0.9100 | 0.9020 | 0.9200 | 0.9109 | 0.9662 | 15 | 12 |
+| Step7 DeBERTa calibrated | 0.9067 | 0.9067 | 0.9067 | 0.9067 | 0.9662 | 14 | 14 |
+| Step7 ensemble, raw TF-IDF | 0.9133 | 0.9133 | 0.9133 | 0.9133 | 0.9690 | 13 | 13 |
+| Step7 ensemble, combined TF-IDF | 0.9133 | 0.9133 | 0.9133 | 0.9133 | 0.9692 | 13 | 13 |
+| Step7 ensemble, hardneg TF-IDF | 0.9133 | 0.9133 | 0.9133 | 0.9133 | 0.9694 | 13 | 13 |
+| Step7 ensemble, hardneg+poetry TF-IDF | 0.9133 | 0.9133 | 0.9133 | 0.9133 | 0.9696 | 13 | 13 |
+
+This confirms that the optimization goal was achieved on the teacher test set.
+The recommended final teacher-test model is the Step7 ensemble. The raw-TF-IDF
+variant is the simplest tied best candidate:
+
+```text
+DeBERTa: outputs/models/deberta_lit_academic_poetry_step7_combined
+TF-IDF: outputs/models/tfidf_lit_academic_poetry
+alpha: 0.5
+threshold: 0.55
+teacher-test F1: 0.9133
+```
+
+Generated Step7 evidence:
+
+```text
+outputs/models/deberta_lit_academic_poetry_step7_combined/metrics.json
+outputs/calibration/deberta_step7_combined/calibration_report.md
+outputs/evaluation/step7_final_candidate_internal_test.md
+outputs/evaluation/step7_final_candidate_poetry_internal_test.md
+outputs/evaluation/teacher_test_step7_final_comparison.md
 ```

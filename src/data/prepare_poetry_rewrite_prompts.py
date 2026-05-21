@@ -67,12 +67,12 @@ def save_jsonl(samples: List[Dict], path: Path) -> None:
             f.write(json.dumps(sample, ensure_ascii=False) + "\n")
 
 
-def build_prompt_task(sample: Dict, prompt_config: Dict, task_index: int) -> Dict:
+def build_prompt_task(sample: Dict, prompt_config: Dict, task_index: int, task_prefix: str) -> Dict:
     text = sample["text"]
     prompt = prompt_config["template"].replace("{ text }", text)
 
     return {
-        "task_id": f"rewrite_poetry_{task_index:06d}",
+        "task_id": f"{task_prefix}_{task_index:06d}",
         "source_id": sample["id"],
         "pair_id": sample["pair_id"],
         "domain": "poetry",
@@ -89,6 +89,7 @@ def parse_args():
 
     parser.add_argument("--input", type=str, default=str(DEFAULT_INPUT_PATH))
     parser.add_argument("--output", type=str, default=str(DEFAULT_OUTPUT_PATH))
+    parser.add_argument("--task_prefix", type=str, default="rewrite_poetry")
 
     return parser.parse_args()
 
@@ -107,7 +108,7 @@ def main():
     tasks = []
     for idx, sample in enumerate(samples, start=1):
         prompt_config = PROMPTS[(idx - 1) % len(PROMPTS)]
-        tasks.append(build_prompt_task(sample, prompt_config, idx))
+        tasks.append(build_prompt_task(sample, prompt_config, idx, args.task_prefix))
 
     save_jsonl(tasks, output_path)
 

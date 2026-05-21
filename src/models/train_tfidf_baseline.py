@@ -1,6 +1,7 @@
 import argparse
 import json
 import pickle
+import sys
 from pathlib import Path
 from typing import Dict, List, Tuple
 
@@ -20,12 +21,56 @@ from sklearn.metrics import (
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(PROJECT_ROOT / "src"))
+
+from utils.text_normalization import normalize_text
 
 DEFAULT_TRAIN_PATH = PROJECT_ROOT / "data" / "processed" / "lit_academic_poetry_train.jsonl"
 DEFAULT_VALID_PATH = PROJECT_ROOT / "data" / "processed" / "lit_academic_poetry_valid.jsonl"
 DEFAULT_TEST_PATH = PROJECT_ROOT / "data" / "processed" / "lit_academic_poetry_internal_test.jsonl"
 
 DEFAULT_OUTPUT_DIR = PROJECT_ROOT / "outputs" / "models" / "tfidf_baseline"
+
+
+def normalize_texts_if_requested(texts: List[str], args, split_name: str) -> Tuple[List[str], Dict]:
+    if not args.normalize_text:
+        return texts, {
+            "split": split_name,
+            "enabled": False,
+            "num_texts": len(texts),
+            "changed_texts": 0,
+        }
+
+    normalized = [
+        normalize_text(
+            text,
+            repair_mojibake=not args.no_repair_mojibake,
+            use_ftfy=args.use_ftfy,
+            unicode_form=args.unicode_form,
+            normalize_quotes=not args.no_normalize_quotes,
+            normalize_dashes=not args.no_normalize_dashes,
+            normalize_spaces=not args.no_normalize_spaces,
+            preserve_linebreaks=not args.collapse_linebreaks,
+        )
+        for text in texts
+    ]
+    changed = sum(1 for before, after in zip(texts, normalized) if before != after)
+    stats = {
+        "split": split_name,
+        "enabled": True,
+        "num_texts": len(texts),
+        "changed_texts": changed,
+        "changed_fraction": changed / len(texts) if texts else 0.0,
+        "repair_mojibake": not args.no_repair_mojibake,
+        "use_ftfy": args.use_ftfy,
+        "unicode_form": args.unicode_form,
+        "normalize_quotes": not args.no_normalize_quotes,
+        "normalize_dashes": not args.no_normalize_dashes,
+        "normalize_spaces": not args.no_normalize_spaces,
+        "preserve_linebreaks": not args.collapse_linebreaks,
+    }
+    print(f"Text normalization [{split_name}]: changed {changed}/{len(texts)} texts")
+    return normalized, stats
 
 
 def load_jsonl(path: Path) -> List[Dict]:
@@ -307,6 +352,56 @@ def parse_args():
         help="Use balanced class weight or no class weight.",
     )
 
+    parser.add_argument(
+        "--normalize_text",
+        action="store_true",
+        help="Apply conservative Unicode/mojibake/quote/dash normalization before TF-IDF.",
+    )
+
+    parser.add_argument(
+        "--use_ftfy",
+        action="store_true",
+        help="Use ftfy.fix_text if ftfy is installed. Falls back silently if missing.",
+    )
+
+    parser.add_argument(
+        "--unicode_form",
+        type=str,
+        default="NFKC",
+        choices=["NFC", "NFKC", "NFD", "NFKD", ""],
+        help="Unicode normalization form used when --normalize_text is set.",
+    )
+
+    parser.add_argument(
+        "--no_repair_mojibake",
+        action="store_true",
+        help="Disable common mojibake repair when --normalize_text is set.",
+    )
+
+    parser.add_argument(
+        "--no_normalize_quotes",
+        action="store_true",
+        help="Disable curly quote normalization when --normalize_text is set.",
+    )
+
+    parser.add_argument(
+        "--no_normalize_dashes",
+        action="store_true",
+        help="Disable dash normalization when --normalize_text is set.",
+    )
+
+    parser.add_argument(
+        "--no_normalize_spaces",
+        action="store_true",
+        help="Disable Unicode space normalization when --normalize_text is set.",
+    )
+
+    parser.add_argument(
+        "--collapse_linebreaks",
+        action="store_true",
+        help="Collapse all whitespace instead of preserving line breaks. Not recommended for poetry.",
+    )
+
     return parser.parse_args()
 
 
@@ -340,6 +435,14 @@ def main():
     valid_texts, y_valid, valid_ids = extract_texts_labels(valid_samples)
     test_texts, y_test, test_ids = extract_texts_labels(test_samples)
 
+    normalization_stats = []
+    train_texts, stats = normalize_texts_if_requested(train_texts, args, "train")
+    normalization_stats.append(stats)
+    valid_texts, stats = normalize_texts_if_requested(valid_texts, args, "valid")
+    normalization_stats.append(stats)
+    test_texts, stats = normalize_texts_if_requested(test_texts, args, "internal_test")
+    normalization_stats.append(stats)
+
     print("\nLoaded data:")
     print("  train samples:", len(train_texts), "label counts:", dict(zip(*np.unique(y_train, return_counts=True))))
     print("  valid samples:", len(valid_texts), "label counts:", dict(zip(*np.unique(y_valid, return_counts=True))))
@@ -372,6 +475,7 @@ def main():
     metrics = {
         "valid": valid_metrics,
         "internal_test": test_metrics,
+        "normalization": normalization_stats,
     }
 
     save_artifacts(

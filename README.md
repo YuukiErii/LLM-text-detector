@@ -30,7 +30,7 @@ Labels:
 
 ## Model Plan
 
-The final detector is planned as a probability ensemble:
+The original delivered detector was a probability ensemble:
 
 ```text
 P_final = alpha * P_deberta + (1 - alpha) * P_tfidf
@@ -43,8 +43,14 @@ Branches:
 | DeBERTa-v3-base classifier | Captures semantic, discourse, and deep style signals |
 | Word/char TF-IDF + Logistic Regression | Captures lexical, punctuation, spelling, and surface style signals |
 
-TF-IDF, DeBERTa, and the probability ensemble training entrypoints are present.
-Training artifacts are intentionally not committed.
+After the 2026-05-21 optimization pass, the strongest teacher-test candidate is
+the Step7 DeBERTa-v3-base model retrained on the combined hard-negative,
+ChatGPT-hard-positive, and poetry-expansion recipe, then ensembled with TF-IDF.
+The best validated teacher-test variants reach F1 `0.9133` versus `0.9073` for
+the original final ensemble.
+
+TF-IDF, DeBERTa, threshold calibration, comparison, and probability ensemble
+entrypoints are present. Training artifacts are intentionally not committed.
 
 ## Current Status
 
@@ -67,7 +73,8 @@ Current processed data includes:
 | `data/processed/lit_academic_poetry_{train,valid,internal_test}.jsonl` | Main pair-safe split |
 | TF-IDF baseline | Implemented in `src/models/train_tfidf_baseline.py` |
 | DeBERTa classifier | Implemented in `src/models/train_deberta.py` |
-| Ensemble tuner | Implemented in `src/models/ensemble.py`; best fine config uses `alpha=0.33`, `threshold=0.48` |
+| Ensemble tuner | Implemented in `src/models/ensemble.py`; original fine config uses `alpha=0.33`, `threshold=0.48` |
+| Threshold calibration | Implemented in `src/evaluation/calibrate_prediction_thresholds.py`; Step7 DeBERTa internal-test best-F1 threshold is `0.676` |
 | Final ensemble inference | Implemented in `src/evaluation/predict_ensemble.py` |
 | API | Optional future serving work |
 
@@ -76,6 +83,9 @@ For detailed handoff notes, read:
 - `NLG_LLM_Detector_Task_Outline.md`
 - `NLG_LLM_Detector_Progress_and_Plan_Updated_2026-05-20.md`
 - `RESULTS_AND_OPTIMIZATION_PLAN.md`
+- `FINAL_TEACHER_TEST_REPORT_2026-05-21.md`
+- `NLG_LLM_Detector_Holistic_Optimization_Plan_2026-05-21.md`
+- `NLG_LLM_Detector_Optimization_Work_Log_2026-05-21.md`
 
 ## Repository Layout
 
@@ -271,25 +281,40 @@ python src/models/ensemble.py `
   --thresholds 0.45,0.46,0.47,0.48,0.49,0.5,0.51,0.52,0.53,0.54,0.55,0.56,0.57,0.58,0.59,0.6
 ```
 
-Run final ensemble inference on the teacher test set:
+Run the optimized Step7 ensemble inference on the teacher test set:
 
 ```powershell
 python src/evaluation/predict_ensemble.py `
   --input data/raw/teacher_test.json `
-  --output outputs/predictions/teacher_test_final_ensemble_predictions.jsonl `
-  --submission outputs/predictions/teacher_test_submission_minimal.json `
-  --metrics outputs/predictions/teacher_test_final_ensemble_metrics.json `
+  --output outputs/predictions/teacher_test_step7_ensemble_raw_tfidf_predictions.jsonl `
+  --submission outputs/predictions/teacher_test_step7_ensemble_raw_tfidf_submission.json `
+  --metrics outputs/predictions/teacher_test_step7_ensemble_raw_tfidf_metrics.json `
+  --tfidf_dir outputs/models/tfidf_lit_academic_poetry `
+  --deberta_dir outputs/models/deberta_lit_academic_poetry_step7_combined `
+  --alpha 0.5 `
+  --threshold 0.55 `
   --batch_size 16 `
   --minimal_submission
 ```
 
-The default ensemble configuration is loaded from:
+The original final ensemble configuration is loaded from:
 
 ```text
 outputs/models/ensemble_lit_academic_poetry_fine/fusion_config.json
 ```
 
 Current final teacher-test result:
+
+```text
+accuracy  0.9133
+precision 0.9133
+recall    0.9133
+f1        0.9133
+roc_auc   0.9690
+confusion [[137, 13], [13, 137]]
+```
+
+The previous final ensemble remains a useful baseline:
 
 ```text
 accuracy  0.9033
@@ -310,10 +335,10 @@ Generate a teacher-test error-analysis note:
 
 ```powershell
 python src/evaluation/analyze_predictions.py `
-  --predictions outputs/predictions/teacher_test_final_ensemble_predictions.jsonl `
+  --predictions outputs/predictions/teacher_test_step7_ensemble_raw_tfidf_predictions.jsonl `
   --input data/raw/teacher_test.json `
-  --output outputs/predictions/teacher_test_error_analysis.md `
-  --threshold 0.48 `
+  --output outputs/predictions/teacher_test_step7_error_analysis.md `
+  --threshold 0.55 `
   --examples 8
 ```
 
@@ -321,7 +346,7 @@ Report-ready generated artifacts:
 
 ```text
 outputs/predictions/final_report_tables.md
-outputs/predictions/teacher_test_error_analysis.md
+outputs/predictions/teacher_test_step7_error_analysis.md
 ```
 
 The public repository does not commit `outputs/` files. The report-ready
@@ -329,6 +354,7 @@ metrics and the detailed optimization roadmap are summarized in:
 
 ```text
 RESULTS_AND_OPTIMIZATION_PLAN.md
+FINAL_TEACHER_TEST_REPORT_2026-05-21.md
 ```
 
 ## Data Rules

@@ -1,6 +1,7 @@
 import argparse
 import json
 import pickle
+import sys
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Tuple
 
@@ -17,6 +18,9 @@ from sklearn.metrics import (
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(PROJECT_ROOT / "src"))
+
+from utils.text_normalization import normalize_text
 
 DEFAULT_INPUT_PATH = PROJECT_ROOT / "data" / "raw" / "teacher_test.json"
 DEFAULT_OUTPUT_PATH = PROJECT_ROOT / "outputs" / "predictions" / "teacher_test_ensemble_predictions.jsonl"
@@ -87,9 +91,36 @@ def load_tfidf_artifacts(tfidf_dir: Path):
     return model, word_vectorizer, char_vectorizer
 
 
+def load_tfidf_config(tfidf_dir: Path) -> Dict:
+    config_path = tfidf_dir / "config.json"
+    if not config_path.exists():
+        return {}
+    return json.loads(config_path.read_text(encoding="utf-8"))
+
+
+def maybe_normalize_for_tfidf(texts: List[str], config: Dict) -> List[str]:
+    if not config.get("normalize_text"):
+        return texts
+
+    return [
+        normalize_text(
+            text,
+            repair_mojibake=not config.get("no_repair_mojibake", False),
+            use_ftfy=config.get("use_ftfy", False),
+            unicode_form=config.get("unicode_form", "NFKC"),
+            normalize_quotes=not config.get("no_normalize_quotes", False),
+            normalize_dashes=not config.get("no_normalize_dashes", False),
+            normalize_spaces=not config.get("no_normalize_spaces", False),
+            preserve_linebreaks=not config.get("collapse_linebreaks", False),
+        )
+        for text in texts
+    ]
+
+
 def predict_tfidf(samples: List[Dict], tfidf_dir: Path) -> np.ndarray:
     model, word_vectorizer, char_vectorizer = load_tfidf_artifacts(tfidf_dir)
-    texts = [sample["text"] for sample in samples]
+    config = load_tfidf_config(tfidf_dir)
+    texts = maybe_normalize_for_tfidf([sample["text"] for sample in samples], config)
     x_word = word_vectorizer.transform(texts)
     x_char = char_vectorizer.transform(texts)
     x = hstack([x_word, x_char])
