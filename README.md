@@ -54,12 +54,14 @@ Those candidates improved the constructed guard development set, but did not
 beat Step7 on the final teacher-test diagnostic. The final public system
 therefore remains the Step7 DeBERTa + TF-IDF ensemble.
 
-Later 2026-05-22 Round4-Round6 work explored residual-repair candidates:
-paired residual data, a human-style guard, a flip guard, and a safe-override
-selector. These runs produced useful code and diagnostics, but none cleared the
-promotion gates for replacing Step7. The current next route is Round7:
-exact-candidate calibrated selector work, documented in
-`docs/ROUND6_DETAILED_WORK_RECORD_AND_ROUND7_PLAN_2026-05-22.md`.
+Later 2026-05-22 Round4-Round7 work explored residual-repair candidates:
+paired residual data, a human-style guard, a flip guard, safe-override
+selectors, and exact-candidate routing. Round7 passed its non-teacher gate and
+improved the held-out exact unsafe probe from `2/35` blocked candidates to
+`28/35`, but its frozen teacher-test rule made zero overrides and tied Step7 at
+`274/300`. The current next route is Round8 unsafe-guard bottleneck repair,
+documented in
+`docs/ROUND7_DETAILED_WORK_RECORD_AND_ROUND8_PLAN_2026-05-22.md`.
 
 TF-IDF, DeBERTa, threshold calibration, comparison, and probability ensemble
 entrypoints are present. Training artifacts are intentionally not committed.
@@ -97,8 +99,8 @@ third-round OOF and precision-guard result, read
 `docs/ROUND3_RESULTS_SUMMARY.md`. For the later residual-repair sequence, read
 `docs/ROUND4_V1_SUMMARY_AND_ROUND5_PLAN_2026-05-22.md`,
 `docs/ROUND5_FINAL_DECISION_2026-05-22.md`, and
-`docs/ROUND6_DETAILED_WORK_RECORD_AND_ROUND7_PLAN_2026-05-22.md`. Older drafts,
-plans, and full work logs are preserved in `docs/archive/`.
+`docs/ROUND7_DETAILED_WORK_RECORD_AND_ROUND8_PLAN_2026-05-22.md`. Older
+drafts, plans, and full work logs are preserved in `docs/archive/`.
 
 ## Repository Layout
 
@@ -118,6 +120,8 @@ plans, and full work logs are preserved in `docs/archive/`.
 |   |-- ROUND4_V1_SUMMARY_AND_ROUND5_PLAN_2026-05-22.md
 |   |-- ROUND5_FINAL_DECISION_2026-05-22.md
 |   |-- ROUND6_DETAILED_WORK_RECORD_AND_ROUND7_PLAN_2026-05-22.md
+|   |-- ROUND7_FINAL_DECISION_2026-05-22.md
+|   |-- ROUND7_DETAILED_WORK_RECORD_AND_ROUND8_PLAN_2026-05-22.md
 |   `-- archive/             # Preserved historical markdown drafts and logs
 |-- src/
 |   |-- app/                 # Future FastAPI app
@@ -393,8 +397,8 @@ PROJECT_REPORT.md
 ## Next Work Items
 
 1. Use `PROJECT_REPORT.md` as the single report-facing summary.
-2. If further accuracy is needed, continue from the Round7 route in
-   `docs/ROUND6_DETAILED_WORK_RECORD_AND_ROUND7_PLAN_2026-05-22.md`: audit
-   exact override candidates, build an exact-candidate dataset, and promote to
-   teacher-test only after non-teacher gates pass.
+2. If further accuracy is needed, continue from the Round8 route in
+   `docs/ROUND7_DETAILED_WORK_RECORD_AND_ROUND8_PLAN_2026-05-22.md`: audit the
+   unsafe-guard bottleneck, build exact-candidate calibration data, and promote
+   to teacher-test only after non-teacher gates pass.
 3. Add API serving only if required by the final submission format.

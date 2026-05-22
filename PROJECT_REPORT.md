@@ -198,11 +198,17 @@ The later 2026-05-22 residual-repair sequence continued that same lesson:
 3. Round6 trained a safe-override selector and found an FP-safe local rule, but
    the rule fixed only `43` hard-positive Step7 false negatives versus the hard
    minimum of `57`. It stopped before teacher-test.
+4. Round7 rebuilt the task around exact Step7-human -> Round4-LLM
+   disagreement candidates. Its exact selector improved held-out exact unsafe
+   blocking from `2/35` to `28/35`, and the non-teacher rule search fixed `62`
+   hard-positive Step7 false negatives with zero induced hard-negative FP.
+   The frozen teacher-test diagnostic still made zero overrides and tied Step7
+   at `274/300`.
 
-The active next route is not another broad threshold sweep. It is Round7:
-exact-candidate calibrated selector work, with the starting audit and stop
-conditions documented in
-`docs/ROUND6_DETAILED_WORK_RECORD_AND_ROUND7_PLAN_2026-05-22.md`.
+The active next route is not another broad threshold sweep. It is Round8:
+unsafe-guard bottleneck repair, because the frozen Round7 teacher-test safe
+candidates were still vetoed by the Round5 unsafe guard. The detailed handoff
+is in `docs/ROUND7_DETAILED_WORK_RECORD_AND_ROUND8_PLAN_2026-05-22.md`.
 
 ## 5. Error Pattern
 
@@ -250,8 +256,7 @@ unlikely to be enough. Most practical next steps are data-first:
 5. Keep teacher-test labels out of training and threshold selection unless the
    course explicitly allows post-hoc tuning.
 
-After Round4-Round6, the most specific next execution path is to train and
-validate directly on non-teacher exact override candidates:
+Round7 validated the exact-candidate direction on non-teacher data:
 
 ```text
 Step7 predicts human
@@ -259,8 +264,11 @@ signal branch predicts LLM
 selector decides whether that local override is safe
 ```
 
-Round7 should stop before teacher-test unless the exact-candidate probe,
-hard-negative gate, internal-test gate, and hard-positive repair gate all pass.
+Its final diagnostic shows the next bottleneck more sharply: the Round5 unsafe
+guard remains a hard veto for the three teacher-test safe override candidates.
+Round8 should repair that unsafe-guard bottleneck on non-teacher exact
+candidates without regressing the hard-negative and held-out exact-probe safety
+gates.
 
 ## 7. Reproduction Commands
 
@@ -330,6 +338,9 @@ Root-level documents:
 | `docs/ROUND5_SUPPLEMENT_AND_ROUND6_PLAN_2026-05-22.md` | Round5 supplemental summary and Round6 plan |
 | `docs/ROUND6_OPTIMIZATION_WORK_LOG_2026-05-22.md` | Round6 implementation work log |
 | `docs/ROUND6_DETAILED_WORK_RECORD_AND_ROUND7_PLAN_2026-05-22.md` | Round6 detailed handoff and Round7 exact-candidate selector plan |
+| `docs/ROUND7_OPTIMIZATION_WORK_LOG_2026-05-22.md` | Round7 exact-candidate implementation work log |
+| `docs/ROUND7_FINAL_DECISION_2026-05-22.md` | Round7 frozen teacher-test diagnostic and final decision |
+| `docs/ROUND7_DETAILED_WORK_RECORD_AND_ROUND8_PLAN_2026-05-22.md` | Round7 detailed handoff and Round8 unsafe-guard bottleneck plan |
 
 Archived source documents:
 
