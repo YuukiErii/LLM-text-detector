@@ -1,3 +1,17 @@
-*.safetensors filter=lfs diff=lfs merge=lfs -text
-*.pt filter=lfs diff=lfs merge=lfs -text
-*.pth filter=lfs diff=lfs merge=lfs -text
+* text=auto eol=lf
+
+*.png binary -eol
+*.jpg binary -eol
+*.jpeg binary -eol
+*.pdf binary -eol
+*.ppt binary -eol
+*.pptx binary -eol
+
+*.bin filter=lfs diff=lfs merge=lfs -text -eol
+*.ckpt filter=lfs diff=lfs merge=lfs -text -eol
+*.joblib filter=lfs diff=lfs merge=lfs -text -eol
+*.onnx filter=lfs diff=lfs merge=lfs -text -eol
+*.pkl filter=lfs diff=lfs merge=lfs -text -eol
+*.pt filter=lfs diff=lfs merge=lfs -text -eol
+*.pth filter=lfs diff=lfs merge=lfs -text -eol
+*.safetensors filter=lfs diff=lfs merge=lfs -text -eol

@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this project, please cite it as below."
+title: "LLM Text Detector"
+type: software
+authors:
+  - family-names: Zhong
+    given-names: Ziming
+repository-code: "https://github.com/YuukiErii/LLM-text-detector"
+version: "1.0.0"
+date-released: "2026-05-22"
+abstract: "A hybrid DeBERTa and TF-IDF detector for human-written versus LLM-generated or LLM-rewritten English text, with conservative teacher-test diagnostics and reproducible final baseline artifacts."
+keywords:
+  - LLM text detection
+  - AI-generated text detection
+  - DeBERTa
+  - TF-IDF
+  - model ensemble
+  - reproducibility

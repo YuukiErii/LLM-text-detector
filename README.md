@@ -104,6 +104,9 @@ third-round OOF and precision-guard result, read
 `docs/rounds/round7_detailed_work_record_and_round8_plan_2026-05-22.md`. Older
 drafts, plans, and full work logs are preserved in `docs/rounds/`.
 
+For the final release-quality pass, including report/PPT visual QA and filename
+audits, read `docs/final/release_quality_audit_2026-05-22.md`.
+
 ## Repository Layout
 
 ```text
@@ -112,18 +115,16 @@ drafts, plans, and full work logs are preserved in `docs/rounds/`.
 |   |-- raw/                 # Raw external caches ignored, teacher_test.json tracked
 |   `-- processed/           # Tracked processed JSONL datasets and reports
 |-- outputs/
-|   |-- figures/             # Publication figures selected for tracking
-|   |-- models/              # Final Step7 inference artifacts tracked via LFS
-|   `-- predictions/         # Generated prediction outputs ignored
+|   |-- figures/publication/ # Final publication figures selected for tracking
+|   `-- models/              # Final baseline artifacts only; neural weights via LFS
 |-- docs/
 |   |-- final/               # Final model card and file manifest
 |   `-- rounds/              # Normalized round-by-round plans, logs, results
 |-- src/
-|   |-- app/                 # Future FastAPI app
 |   |-- data/                # Data collection, prompt, rewrite, QC, split scripts
 |   |-- evaluation/          # Final inference and prediction analysis scripts
-|   |-- features/            # Future feature utilities
 |   `-- models/              # Baseline and future neural training scripts
+|-- CITATION.cff
 |-- requirements.txt
 |-- PROJECT_REPORT.md
 `-- README.md
@@ -374,8 +375,10 @@ outputs/predictions/round3_final_submission.json
 outputs/evaluation/round3_final_teacher_comparison.md
 ```
 
-The public repository does not commit `outputs/` files. The report-ready
-metrics and the detailed optimization roadmap are consolidated in:
+The public repository commits only selected `outputs/` artifacts: final
+baseline model folders and publication figures. Generated prediction,
+calibration, and comparison outputs remain local-only. The report-ready metrics
+and the detailed optimization roadmap are consolidated in:
 
 ```text
 PROJECT_REPORT.md
@@ -397,3 +400,7 @@ PROJECT_REPORT.md
    unsafe-guard bottleneck, build exact-candidate calibration data, and promote
    to teacher-test only after non-teacher gates pass.
 3. Add API serving only if required by the final submission format.
+
+## Citation
+
+Citation metadata is available in `CITATION.cff`.

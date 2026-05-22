@@ -11,12 +11,13 @@ organization.
 | --- | --- | --- |
 | `README.md` | tracked | setup, overview, common commands |
 | `PROJECT_REPORT.md` | tracked | consolidated English project handoff |
+| `CITATION.cff` | tracked | citation metadata for GitHub and scholarly reuse |
 | `requirements.txt` | tracked | Python dependencies |
 | `src/` | tracked | data, model, and evaluation scripts |
 | `data/raw/teacher_test.json` | tracked | final diagnostic input supplied for the project |
 | `data/processed/` | tracked | processed reproducibility datasets and reports |
 | `docs/rounds/` | tracked | normalized round-by-round plans, logs, and decisions |
-| `docs/final/` | tracked | final model card and file manifest |
+| `docs/final/` | tracked | final model card, file manifest, and release-quality audit |
 | `outputs/models/deberta_lit_academic_poetry_step7_combined/` | tracked via LFS for weights | final Step7 DeBERTa inference artifact |
 | `outputs/models/tfidf_lit_academic_poetry/` | tracked | final TF-IDF branch |
 | `outputs/models/ensemble_lit_academic_poetry_step7_deberta_raw_tfidf/` | tracked | final fusion config and small validation/internal predictions |
@@ -29,6 +30,8 @@ organization.
 | --- | --- |
 | `report/` | Chinese final report source/build products; course deliverable, not public repo content |
 | `presentation/` | English final presentation; course deliverable, not public repo content |
+| `report/qa_review/` | rendered report QA previews kept local |
+| `presentation/qa_review/` | rendered slide QA previews kept local |
 | `data/raw/external_*` | raw external caches, large and reproducible from source scripts |
 | `outputs/predictions/` | generated prediction dumps |
 | `outputs/evaluation/` | generated comparison and tuning outputs |
@@ -48,7 +51,17 @@ docs/final/{artifact_name}.md
 
 Model artifact names are intentionally left in their original training-output
 form when scripts or reports refer to them directly. Only final Step7 inference
-artifacts remain under `outputs/models/`.
+artifacts and explicit baseline-comparison configs remain under
+`outputs/models/`.
+
+Local QA previews use ASCII filenames, for example:
+
+```text
+presentation/qa_review/slide_01.png
+presentation/qa_review/ppt_contact_sheet.png
+report/qa_review/page-01.png
+report/qa_review/report_contact_sheet.png
+```
 
 ## Cleanup Decision
 
@@ -56,3 +69,6 @@ Non-final heavyweight model directories and raw external caches were removed
 from the project tree after confirming that Step7 is the final baseline. Round
 records, reports, metrics, and code paths were preserved so the optimization
 history remains auditable without carrying non-promoted weights.
+
+The final release audit is preserved in
+`docs/final/release_quality_audit_2026-05-22.md`.
