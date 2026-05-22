@@ -30,6 +30,13 @@ data/raw/*
 data/interim/*
 data/external/*
 data/metadata/*
+data/processed/round4_*.jsonl
+data/processed/round4_*_report.json
+data/processed/round5_*.jsonl
+data/processed/round5_*_report.json
+data/processed/round6_*.jsonl
+data/processed/round6_*_report.json
+data/processed/round6_*_report.md
 !data/raw/.gitkeep
 !data/raw/teacher_test.json
 !data/processed/.gitkeep

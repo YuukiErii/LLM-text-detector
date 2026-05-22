@@ -227,7 +227,17 @@ def write_predictions(
                 "p_tfidf": float(p_tfidf),
                 "p_deberta": float(p_deberta),
             }
-            for key in ["domain", "generator", "source", "pair_id"]:
+            for key in [
+                "domain",
+                "generator",
+                "source",
+                "pair_id",
+                "bucket",
+                "round2_tag",
+                "round3_tag",
+                "round4_bucket",
+                "round4_tag",
+            ]:
                 if sample.get(key) is not None:
                     row[key] = sample.get(key)
             if include_text:

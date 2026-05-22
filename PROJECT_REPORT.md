@@ -186,6 +186,24 @@ Round3's value is diagnostic: it shows that guarded repair can work on a
 constructed mirror set, but the current local data is still not sufficient for
 reliable teacher-test generalization.
 
+The later 2026-05-22 residual-repair sequence continued that same lesson:
+
+1. Round4 rebuilt paired residual data and trained a more aggressive DeBERTa
+   branch plus a human-style guard. The branch exposed useful hard-positive
+   signal, but it was unsafe as a global replacement because it raised human
+   false positives.
+2. Round5 added a Step7-vs-Round4 flip ledger and a flip guard. It passed the
+   non-teacher safety gates, but made zero teacher-test overrides and therefore
+   tied Step7 at `274/300`.
+3. Round6 trained a safe-override selector and found an FP-safe local rule, but
+   the rule fixed only `43` hard-positive Step7 false negatives versus the hard
+   minimum of `57`. It stopped before teacher-test.
+
+The active next route is not another broad threshold sweep. It is Round7:
+exact-candidate calibrated selector work, with the starting audit and stop
+conditions documented in
+`docs/ROUND6_DETAILED_WORK_RECORD_AND_ROUND7_PLAN_2026-05-22.md`.
+
 ## 5. Error Pattern
 
 The hardest remaining cases are:
@@ -231,6 +249,18 @@ unlikely to be enough. Most practical next steps are data-first:
    if it makes different errors from DeBERTa, TF-IDF, RoBERTa, and ELECTRA.
 5. Keep teacher-test labels out of training and threshold selection unless the
    course explicitly allows post-hoc tuning.
+
+After Round4-Round6, the most specific next execution path is to train and
+validate directly on non-teacher exact override candidates:
+
+```text
+Step7 predicts human
+signal branch predicts LLM
+selector decides whether that local override is safe
+```
+
+Round7 should stop before teacher-test unless the exact-candidate probe,
+hard-negative gate, internal-test gate, and hard-positive repair gate all pass.
 
 ## 7. Reproduction Commands
 
@@ -292,6 +322,14 @@ Root-level documents:
 | `docs/ROUND2_POSTMORTEM_AND_ROUND3_PLAN.md` | Round2 postmortem and Round3 execution plan |
 | `docs/ROUND3_PHASEA_C_PROGRESS.md` | Round3 Phase A-C handoff |
 | `docs/ROUND3_RESULTS_SUMMARY.md` | Completed Round3 Phase D-F results and final decision |
+| `docs/THREE_ROUND_OPTIMIZATION_REVIEW_AND_95_ROUTE_2026-05-22.md` | Cross-round review and 95% route after the first three optimization rounds |
+| `docs/ROUND4_RESIDUAL_REPAIR_WORK_LOG_2026-05-22.md` | Round4 residual-repair implementation log |
+| `docs/ROUND4_V1_SUMMARY_AND_ROUND5_PLAN_2026-05-22.md` | Round4 v1 summary and Round5 execution plan |
+| `docs/ROUND5_OPTIMIZATION_WORK_LOG_2026-05-22.md` | Round5 implementation work log |
+| `docs/ROUND5_FINAL_DECISION_2026-05-22.md` | Round5 teacher-test diagnostic and final decision |
+| `docs/ROUND5_SUPPLEMENT_AND_ROUND6_PLAN_2026-05-22.md` | Round5 supplemental summary and Round6 plan |
+| `docs/ROUND6_OPTIMIZATION_WORK_LOG_2026-05-22.md` | Round6 implementation work log |
+| `docs/ROUND6_DETAILED_WORK_RECORD_AND_ROUND7_PLAN_2026-05-22.md` | Round6 detailed handoff and Round7 exact-candidate selector plan |
 
 Archived source documents:
 

@@ -127,7 +127,17 @@ def main():
         }
         if args.prob_field:
             row[args.prob_field] = float(prob)
-        for key in ["domain", "generator", "source", "pair_id", "bucket", "round2_tag"]:
+        for key in [
+            "domain",
+            "generator",
+            "source",
+            "pair_id",
+            "bucket",
+            "round2_tag",
+            "round3_tag",
+            "round4_bucket",
+            "round4_tag",
+        ]:
             if sample.get(key) is not None:
                 row[key] = sample.get(key)
         if args.include_text:

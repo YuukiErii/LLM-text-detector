@@ -54,6 +54,13 @@ Those candidates improved the constructed guard development set, but did not
 beat Step7 on the final teacher-test diagnostic. The final public system
 therefore remains the Step7 DeBERTa + TF-IDF ensemble.
 
+Later 2026-05-22 Round4-Round6 work explored residual-repair candidates:
+paired residual data, a human-style guard, a flip guard, and a safe-override
+selector. These runs produced useful code and diagnostics, but none cleared the
+promotion gates for replacing Step7. The current next route is Round7:
+exact-candidate calibrated selector work, documented in
+`docs/ROUND6_DETAILED_WORK_RECORD_AND_ROUND7_PLAN_2026-05-22.md`.
+
 TF-IDF, DeBERTa, threshold calibration, comparison, and probability ensemble
 entrypoints are present. Training artifacts are intentionally not committed.
 
@@ -87,8 +94,11 @@ For detailed handoff notes, read `PROJECT_REPORT.md` first. For the second
 round 95% target, read `docs/SECOND_ROUND_95_OPTIMIZATION_PLAN.md`; for the
 executed second-round result, read `docs/ROUND2_RESULTS_SUMMARY.md`; for the
 third-round OOF and precision-guard result, read
-`docs/ROUND3_RESULTS_SUMMARY.md`. Older drafts, plans, and full work logs are
-preserved in `docs/archive/`.
+`docs/ROUND3_RESULTS_SUMMARY.md`. For the later residual-repair sequence, read
+`docs/ROUND4_V1_SUMMARY_AND_ROUND5_PLAN_2026-05-22.md`,
+`docs/ROUND5_FINAL_DECISION_2026-05-22.md`, and
+`docs/ROUND6_DETAILED_WORK_RECORD_AND_ROUND7_PLAN_2026-05-22.md`. Older drafts,
+plans, and full work logs are preserved in `docs/archive/`.
 
 ## Repository Layout
 
@@ -105,6 +115,9 @@ preserved in `docs/archive/`.
 |   |-- SECOND_ROUND_95_OPTIMIZATION_PLAN.md
 |   |-- ROUND2_POSTMORTEM_AND_ROUND3_PLAN.md
 |   |-- ROUND3_RESULTS_SUMMARY.md
+|   |-- ROUND4_V1_SUMMARY_AND_ROUND5_PLAN_2026-05-22.md
+|   |-- ROUND5_FINAL_DECISION_2026-05-22.md
+|   |-- ROUND6_DETAILED_WORK_RECORD_AND_ROUND7_PLAN_2026-05-22.md
 |   `-- archive/             # Preserved historical markdown drafts and logs
 |-- src/
 |   |-- app/                 # Future FastAPI app
@@ -380,7 +393,8 @@ PROJECT_REPORT.md
 ## Next Work Items
 
 1. Use `PROJECT_REPORT.md` as the single report-facing summary.
-2. If further accuracy is needed, follow the data-first recommendations in
-   `docs/ROUND3_RESULTS_SUMMARY.md`: add old-prose human mirrors and
-   non-ChatGPT hard positives before training another branch.
+2. If further accuracy is needed, continue from the Round7 route in
+   `docs/ROUND6_DETAILED_WORK_RECORD_AND_ROUND7_PLAN_2026-05-22.md`: audit
+   exact override candidates, build an exact-candidate dataset, and promote to
+   teacher-test only after non-teacher gates pass.
 3. Add API serving only if required by the final submission format.
