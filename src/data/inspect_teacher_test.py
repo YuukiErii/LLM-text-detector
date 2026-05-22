@@ -5,7 +5,7 @@ from pathlib import Path
 import numpy as np
 
 
-# 当前文件路径：llm_text_detector/src/data/inspect_teacher_test.py
+# Current file path: llm_text_detector/src/data/inspect_teacher_test.py
 # parents[0] = data
 # parents[1] = src
 # parents[2] = llm_text_detector

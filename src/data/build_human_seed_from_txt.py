@@ -32,7 +32,7 @@ def is_valid_paragraph(paragraph: str) -> bool:
     if word_count > 400:
         return False
 
-    # 去掉明显的目录、版权、项目说明等
+    # Remove obvious table-of-contents, copyright, and project-description lines.
     lower = paragraph.lower()
     bad_keywords = [
         "project gutenberg",

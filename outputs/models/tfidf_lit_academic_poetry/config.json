@@ -1,0 +1,11 @@
+{
+  "train": "data/processed/lit_academic_poetry_train.jsonl",
+  "valid": "data/processed/lit_academic_poetry_valid.jsonl",
+  "test": "data/processed/lit_academic_poetry_internal_test.jsonl",
+  "output_dir": "outputs/models/tfidf_lit_academic_poetry",
+  "word_max_features": 100000,
+  "char_max_features": 100000,
+  "C": 1.0,
+  "max_iter": 3000,
+  "class_weight": "balanced"
+}

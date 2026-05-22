@@ -1,0 +1,8 @@
+{
+  "alpha": 0.33,
+  "threshold": 0.48,
+  "valid_deberta": "outputs/models/deberta_lit_academic_poetry/predictions/deberta_valid_predictions.jsonl",
+  "valid_tfidf": "outputs/models/tfidf_lit_academic_poetry/predictions/tfidf_valid_predictions.jsonl",
+  "test_deberta": "outputs/models/deberta_lit_academic_poetry/predictions/deberta_internal_test_predictions.jsonl",
+  "test_tfidf": "outputs/models/tfidf_lit_academic_poetry/predictions/tfidf_internal_test_predictions.jsonl"
+}

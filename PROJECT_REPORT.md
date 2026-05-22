@@ -1,10 +1,10 @@
-# Project Report: LLM Text Detector
+﻿# Project Report: LLM Text Detector
 
 Updated: 2026-05-22
 
 This file is the consolidated project handoff. It keeps the final results,
 model recipe, optimization history, and next-step judgment in one root-level
-document. Older detailed drafts and logs are preserved under `docs/archive/`.
+document. Older detailed drafts and logs are preserved under `docs/rounds/`.
 
 ## 1. Project Scope
 
@@ -170,7 +170,7 @@ It combines the original train split, controlled hard negatives, ChatGPT-style
 hard positives, human poetry expansion, and ChatGPT poetry expansion.
 
 The 2026-05-22 Round3 pass then tested the postmortem hypothesis from
-`docs/ROUND2_POSTMORTEM_AND_ROUND3_PLAN.md`:
+`docs/rounds/round2_postmortem_and_round3_plan_2026-05-22.md`:
 
 1. Phase A audited Round2 error deltas.
 2. Phase B built a precision-guard development set.
@@ -208,7 +208,7 @@ The later 2026-05-22 residual-repair sequence continued that same lesson:
 The active next route is not another broad threshold sweep. It is Round8:
 unsafe-guard bottleneck repair, because the frozen Round7 teacher-test safe
 candidates were still vetoed by the Round5 unsafe guard. The detailed handoff
-is in `docs/ROUND7_DETAILED_WORK_RECORD_AND_ROUND8_PLAN_2026-05-22.md`.
+is in `docs/rounds/round7_detailed_work_record_and_round8_plan_2026-05-22.md`.
 
 ## 5. Error Pattern
 
@@ -319,39 +319,46 @@ python src/evaluation/compare_round2_candidates.py `
 
 ## 8. Document Map
 
-Root-level documents:
+Primary documents:
 
 | File | Purpose |
 | --- | --- |
 | `README.md` | Repo entrypoint, setup, commands, and public-facing overview |
 | `PROJECT_REPORT.md` | Consolidated final results, optimization summary, and next-step plan |
-| `docs/SECOND_ROUND_95_OPTIMIZATION_PLAN.md` | Detailed execution plan for the second-round 95% accuracy target |
-| `docs/ROUND2_RESULTS_SUMMARY.md` | Executed second-round results and final candidate comparison |
-| `docs/ROUND2_POSTMORTEM_AND_ROUND3_PLAN.md` | Round2 postmortem and Round3 execution plan |
-| `docs/ROUND3_PHASEA_C_PROGRESS.md` | Round3 Phase A-C handoff |
-| `docs/ROUND3_RESULTS_SUMMARY.md` | Completed Round3 Phase D-F results and final decision |
-| `docs/THREE_ROUND_OPTIMIZATION_REVIEW_AND_95_ROUTE_2026-05-22.md` | Cross-round review and 95% route after the first three optimization rounds |
-| `docs/ROUND4_RESIDUAL_REPAIR_WORK_LOG_2026-05-22.md` | Round4 residual-repair implementation log |
-| `docs/ROUND4_V1_SUMMARY_AND_ROUND5_PLAN_2026-05-22.md` | Round4 v1 summary and Round5 execution plan |
-| `docs/ROUND5_OPTIMIZATION_WORK_LOG_2026-05-22.md` | Round5 implementation work log |
-| `docs/ROUND5_FINAL_DECISION_2026-05-22.md` | Round5 teacher-test diagnostic and final decision |
-| `docs/ROUND5_SUPPLEMENT_AND_ROUND6_PLAN_2026-05-22.md` | Round5 supplemental summary and Round6 plan |
-| `docs/ROUND6_OPTIMIZATION_WORK_LOG_2026-05-22.md` | Round6 implementation work log |
-| `docs/ROUND6_DETAILED_WORK_RECORD_AND_ROUND7_PLAN_2026-05-22.md` | Round6 detailed handoff and Round7 exact-candidate selector plan |
-| `docs/ROUND7_OPTIMIZATION_WORK_LOG_2026-05-22.md` | Round7 exact-candidate implementation work log |
-| `docs/ROUND7_FINAL_DECISION_2026-05-22.md` | Round7 frozen teacher-test diagnostic and final decision |
-| `docs/ROUND7_DETAILED_WORK_RECORD_AND_ROUND8_PLAN_2026-05-22.md` | Round7 detailed handoff and Round8 unsafe-guard bottleneck plan |
+| `docs/final/final_baseline_model_card.md` | Final Step7 model recipe, retained files, and promotion decision |
+| `docs/final/project_file_manifest.md` | Public/local file-surface manifest after cleanup |
+| `docs/rounds/round2_95_optimization_plan_2026-05-21.md` | Detailed execution plan for the second-round 95% accuracy target |
+| `docs/rounds/round2_results_summary_2026-05-22.md` | Executed second-round results and final candidate comparison |
+| `docs/rounds/round2_postmortem_and_round3_plan_2026-05-22.md` | Round2 postmortem and Round3 execution plan |
+| `docs/rounds/round3_phase_a_to_c_progress_2026-05-21.md` | Round3 Phase A-C handoff |
+| `docs/rounds/round3_results_summary_2026-05-22.md` | Completed Round3 Phase D-F results and final decision |
+| `docs/rounds/round3_cross_round_review_and_95_route_2026-05-22.md` | Cross-round review and 95% route after the first three optimization rounds |
+| `docs/rounds/round4_residual_repair_work_log_2026-05-22.md` | Round4 residual-repair implementation log |
+| `docs/rounds/round4_v1_summary_and_round5_plan_2026-05-22.md` | Round4 v1 summary and Round5 execution plan |
+| `docs/rounds/round5_optimization_work_log_2026-05-22.md` | Round5 implementation work log |
+| `docs/rounds/round5_final_decision_2026-05-22.md` | Round5 teacher-test diagnostic and final decision |
+| `docs/rounds/round5_supplement_and_round6_plan_2026-05-22.md` | Round5 supplemental summary and Round6 plan |
+| `docs/rounds/round6_optimization_work_log_2026-05-22.md` | Round6 implementation work log |
+| `docs/rounds/round6_detailed_work_record_and_round7_plan_2026-05-22.md` | Round6 detailed handoff and Round7 exact-candidate selector plan |
+| `docs/rounds/round7_optimization_work_log_2026-05-22.md` | Round7 exact-candidate implementation work log |
+| `docs/rounds/round7_final_decision_2026-05-22.md` | Round7 frozen teacher-test diagnostic and final decision |
+| `docs/rounds/round7_detailed_work_record_and_round8_plan_2026-05-22.md` | Round7 detailed handoff and Round8 unsafe-guard bottleneck plan |
+| `docs/rounds/round8_one_shot_95_optimization_plan_2026-05-22.md` | Final one-shot 95% plan and stop-condition rationale |
+| `docs/rounds/round8_one_shot_data_report_2026-05-22.md` | Round8 residual data report |
+| `docs/rounds/round8_one_shot_gate_report_2026-05-22.md` | Round8 gate result |
+| `docs/rounds/round8_optimization_work_log_2026-05-22.md` | Round8 implementation work log |
+| `docs/rounds/round8_residual_error_taxonomy_2026-05-22.md` | Round8 residual taxonomy |
 
-Archived source documents:
+Earlier source documents:
 
 | File | Purpose |
 | --- | --- |
-| `docs/archive/FINAL_TEACHER_TEST_REPORT_2026-05-21.md` | Final teacher-test report before consolidation |
-| `docs/archive/RESULTS_AND_OPTIMIZATION_PLAN.md` | Detailed result interpretation and optimization roadmap |
-| `docs/archive/NLG_LLM_Detector_Holistic_Optimization_Plan_2026-05-21.md` | Step-by-step holistic optimization plan |
-| `docs/archive/NLG_LLM_Detector_Optimization_Work_Log_2026-05-21.md` | Full optimization work log |
-| `docs/archive/NLG_LLM_Detector_Progress_and_Plan_Updated_2026-05-20.md` | Earlier progress and plan snapshot |
-| `docs/archive/NLG_LLM_Detector_Task_Outline.md` | Original task outline |
+| `docs/rounds/round1_final_teacher_test_report_2026-05-21.md` | Final teacher-test report before consolidation |
+| `docs/rounds/round1_results_and_optimization_plan_2026-05-21.md` | Detailed result interpretation and optimization roadmap |
+| `docs/rounds/round1_holistic_optimization_plan_2026-05-21.md` | Step-by-step holistic optimization plan |
+| `docs/rounds/round1_optimization_work_log_2026-05-21.md` | Full optimization work log |
+| `docs/rounds/round0_progress_and_plan_2026-05-20.md` | Earlier progress and plan snapshot |
+| `docs/rounds/round0_task_outline.md` | Original task outline |
 
-The archived files are retained for traceability. `PROJECT_REPORT.md` is the
+The round files are retained for traceability. `PROJECT_REPORT.md` is the
 recommended document to read first.

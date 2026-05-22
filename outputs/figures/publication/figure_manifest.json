@@ -1,0 +1,14 @@
+{
+  "figures": [
+    "fig1_teacher_test_score_plateau",
+    "fig2_teacher_test_error_composition",
+    "fig3_teacher_test_confusion_matrices",
+    "fig4_optimization_trajectory",
+    "fig5_internal_test_metric_panel"
+  ],
+  "tables": [
+    "teacher_test_candidate_summary.csv",
+    "internal_test_model_summary.csv"
+  ],
+  "style": "DejaVu Sans, colorblind-conscious blue/red/green/gold palette, vector PDF/SVG plus high-resolution PNG"
+}

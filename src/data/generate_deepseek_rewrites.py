@@ -19,9 +19,9 @@ DEFAULT_OUTPUT_PATH = PROJECT_ROOT / "data" / "processed" / "llm_rewrite_deepsee
 DEFAULT_FAILED_PATH = PROJECT_ROOT / "data" / "processed" / "llm_rewrite_deepseek_failed.jsonl"
 
 DEFAULT_MODEL = "deepseek-v4-pro"
-# 如果 deepseek-v4-pro 不可用，可以命令行改成：
+# If deepseek-v4-pro is unavailable, override it from the command line:
 # --model deepseek-chat
-# 或者：
+# Or:
 # --model deepseek-v4-flash
 
 
@@ -68,11 +68,11 @@ def load_finished_task_ids(path: Path) -> Set[str]:
 def clean_model_output(text: str) -> str:
     text = text.strip()
 
-    # 去掉常见包裹符号
+    # Remove common wrapping markers.
     text = re.sub(r"^```(?:text|json|markdown)?\s*", "", text, flags=re.IGNORECASE)
     text = re.sub(r"\s*```$", "", text)
 
-    # 去掉模型偶尔输出的说明性前缀
+    # Remove occasional explanatory prefixes emitted by the model.
     prefixes = [
         "Here is the rewritten passage:",
         "Here is the rewrite:",
@@ -86,7 +86,7 @@ def clean_model_output(text: str) -> str:
         if text.lower().startswith(prefix.lower()):
             text = text[len(prefix):].strip()
 
-    # 如果模型加了引号包裹，谨慎去掉一层
+    # If the model wraps the output in quotes, carefully remove one layer.
     if len(text) >= 2:
         if (text[0] == text[-1]) and text[0] in ['"', "'"]:
             text = text[1:-1].strip()
@@ -175,7 +175,7 @@ def call_deepseek(
                 top_p=top_p,
                 max_tokens=max_tokens,
                 stream=False,
-                # 文本改写任务不需要 thinking mode
+                # Text rewriting does not need thinking mode.
                 extra_body={"thinking": {"type": "disabled"}},
             )
 

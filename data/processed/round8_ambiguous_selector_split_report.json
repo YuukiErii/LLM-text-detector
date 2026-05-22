@@ -1,0 +1,248 @@
+{
+  "inputs": {
+    "step7_predictions": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\outputs\\predictions\\residual_candidate_pool_v1_step7_predictions.jsonl",
+    "teacher_test_exact_text_exclusion_only": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\raw\\teacher_test.json"
+  },
+  "outputs": {
+    "train": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\round8_ambiguous_selector_train.jsonl",
+    "dev": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\round8_ambiguous_selector_dev.jsonl",
+    "probe": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\round8_ambiguous_selector_probe.jsonl",
+    "report": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\round8_ambiguous_selector_split_report.json"
+  },
+  "policy": {
+    "source": "all non-teacher candidate-pool rows with Step7 probability inside the ambiguous zone",
+    "ambiguous_low": 0.35,
+    "ambiguous_high": 0.65,
+    "train_share": 0.6,
+    "dev_share": 0.2,
+    "probe_share": 0.2,
+    "seed": 20260522
+  },
+  "target_counts": {
+    "train": {
+      "0": 63,
+      "1": 181
+    },
+    "dev": {
+      "0": 21,
+      "1": 60
+    },
+    "probe": {
+      "0": 21,
+      "1": 61
+    }
+  },
+  "summaries": {
+    "all_ambiguous": {
+      "num_rows": 407,
+      "num_groups": 377,
+      "label_distribution": {
+        "0": 105,
+        "1": 302
+      },
+      "step7_prediction_distribution": {
+        "0": 234,
+        "1": 173
+      },
+      "selection_tier_distribution": {
+        "None": 407
+      },
+      "round8_bucket_distribution": {
+        "human_archaic_prose": 18,
+        "human_classical_poetry": 11,
+        "human_formal_academic": 17,
+        "human_free_verse": 16,
+        "human_literary_short_fragment": 6,
+        "human_old_fiction_dialogue": 28,
+        "human_polished_literary_prose": 9,
+        "llm_academic_term_preserving_paraphrase": 19,
+        "llm_archaic_poetry_rewrite": 108,
+        "llm_conservative_chatgpt_paraphrase": 8,
+        "llm_high_jaccard_rewrite": 15,
+        "llm_human_like_formal_paraphrase": 2,
+        "llm_low_temperature_minimal_rewrite": 28,
+        "llm_old_fiction_style_rewrite": 57,
+        "llm_style_preserving_dialogue_rewrite": 65
+      },
+      "round8_family_distribution": {
+        "human_hard_negative": 105,
+        "llm_hard_positive": 302
+      },
+      "domain_distribution": {
+        "academic": 40,
+        "literature": 234,
+        "poetry": 133
+      },
+      "generator_distribution": {
+        "chatgpt": 296,
+        "deepseek": 4,
+        "gemini": 2,
+        "human": 105
+      },
+      "step7_error_rows": 203,
+      "mean_p_step7": 0.5087143752427076
+    },
+    "train": {
+      "num_rows": 244,
+      "num_groups": 214,
+      "label_distribution": {
+        "0": 63,
+        "1": 181
+      },
+      "step7_prediction_distribution": {
+        "0": 143,
+        "1": 101
+      },
+      "selection_tier_distribution": {
+        "None": 244
+      },
+      "round8_bucket_distribution": {
+        "human_archaic_prose": 10,
+        "human_classical_poetry": 4,
+        "human_formal_academic": 8,
+        "human_free_verse": 11,
+        "human_literary_short_fragment": 3,
+        "human_old_fiction_dialogue": 21,
+        "human_polished_literary_prose": 6,
+        "llm_academic_term_preserving_paraphrase": 12,
+        "llm_archaic_poetry_rewrite": 62,
+        "llm_conservative_chatgpt_paraphrase": 5,
+        "llm_high_jaccard_rewrite": 10,
+        "llm_human_like_formal_paraphrase": 2,
+        "llm_low_temperature_minimal_rewrite": 14,
+        "llm_old_fiction_style_rewrite": 35,
+        "llm_style_preserving_dialogue_rewrite": 41
+      },
+      "round8_family_distribution": {
+        "human_hard_negative": 63,
+        "llm_hard_positive": 181
+      },
+      "domain_distribution": {
+        "academic": 24,
+        "literature": 144,
+        "poetry": 76
+      },
+      "generator_distribution": {
+        "chatgpt": 175,
+        "deepseek": 4,
+        "gemini": 2,
+        "human": 63
+      },
+      "step7_error_rows": 118,
+      "mean_p_step7": 0.506443020319788
+    },
+    "dev": {
+      "num_rows": 81,
+      "num_groups": 81,
+      "label_distribution": {
+        "0": 21,
+        "1": 60
+      },
+      "step7_prediction_distribution": {
+        "0": 46,
+        "1": 35
+      },
+      "selection_tier_distribution": {
+        "None": 81
+      },
+      "round8_bucket_distribution": {
+        "human_archaic_prose": 3,
+        "human_classical_poetry": 5,
+        "human_formal_academic": 4,
+        "human_free_verse": 4,
+        "human_literary_short_fragment": 1,
+        "human_old_fiction_dialogue": 2,
+        "human_polished_literary_prose": 2,
+        "llm_academic_term_preserving_paraphrase": 5,
+        "llm_archaic_poetry_rewrite": 21,
+        "llm_conservative_chatgpt_paraphrase": 2,
+        "llm_high_jaccard_rewrite": 3,
+        "llm_low_temperature_minimal_rewrite": 5,
+        "llm_old_fiction_style_rewrite": 10,
+        "llm_style_preserving_dialogue_rewrite": 14
+      },
+      "round8_family_distribution": {
+        "human_hard_negative": 21,
+        "llm_hard_positive": 60
+      },
+      "domain_distribution": {
+        "academic": 9,
+        "literature": 42,
+        "poetry": 30
+      },
+      "generator_distribution": {
+        "chatgpt": 60,
+        "human": 21
+      },
+      "step7_error_rows": 47,
+      "mean_p_step7": 0.5130494896177211
+    },
+    "probe": {
+      "num_rows": 82,
+      "num_groups": 82,
+      "label_distribution": {
+        "0": 21,
+        "1": 61
+      },
+      "step7_prediction_distribution": {
+        "0": 45,
+        "1": 37
+      },
+      "selection_tier_distribution": {
+        "None": 82
+      },
+      "round8_bucket_distribution": {
+        "human_archaic_prose": 5,
+        "human_classical_poetry": 2,
+        "human_formal_academic": 5,
+        "human_free_verse": 1,
+        "human_literary_short_fragment": 2,
+        "human_old_fiction_dialogue": 5,
+        "human_polished_literary_prose": 1,
+        "llm_academic_term_preserving_paraphrase": 2,
+        "llm_archaic_poetry_rewrite": 25,
+        "llm_conservative_chatgpt_paraphrase": 1,
+        "llm_high_jaccard_rewrite": 2,
+        "llm_low_temperature_minimal_rewrite": 9,
+        "llm_old_fiction_style_rewrite": 12,
+        "llm_style_preserving_dialogue_rewrite": 10
+      },
+      "round8_family_distribution": {
+        "human_hard_negative": 21,
+        "llm_hard_positive": 61
+      },
+      "domain_distribution": {
+        "academic": 7,
+        "literature": 48,
+        "poetry": 27
+      },
+      "generator_distribution": {
+        "chatgpt": 61,
+        "human": 21
+      },
+      "step7_error_rows": 38,
+      "mean_p_step7": 0.5111907939843694
+    }
+  },
+  "leakage": {
+    "train_dev_group_overlap": 0,
+    "train_dev_text_overlap": 0,
+    "train_probe_group_overlap": 0,
+    "train_probe_text_overlap": 0,
+    "dev_probe_group_overlap": 0,
+    "dev_probe_text_overlap": 0,
+    "teacher_exact_text_duplicates": 0
+  },
+  "acceptance": {
+    "checks": {
+      "all_rows_are_step7_ambiguous": true,
+      "train_has_both_labels": true,
+      "dev_min_label_count_at_least_15": true,
+      "probe_min_label_count_at_least_15": true,
+      "no_split_group_overlap": true,
+      "no_split_text_overlap": true,
+      "teacher_exact_duplicate_zero": true
+    },
+    "ready_for_branch_scoring": true
+  }
+}

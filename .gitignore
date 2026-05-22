@@ -25,6 +25,24 @@ desktop.ini
 .env.*
 *.env
 
+# Local report and presentation deliverables
+report/
+presentation/
+*.pptx
+*.ppt
+*.pdf
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+
 # Local data artifacts
 data/raw/*
 data/interim/*
@@ -49,13 +67,14 @@ data/processed/round7_*_report.md
 
 # Generated model, prediction, and experiment outputs
 outputs/*
+outputs/models/*
+outputs/figures/*
 checkpoints/
 saved_models/
 runs/
 wandb/
 mlruns/
 logs/
-*.log
 *.err.log
 *.pid
 
@@ -68,6 +87,21 @@ logs/
 *.onnx
 *.pkl
 *.joblib
+
+# Final public artifacts retained for reproduction
+!outputs/
+!outputs/models/
+!outputs/models/deberta_lit_academic_poetry_step7_combined/
+!outputs/models/deberta_lit_academic_poetry_step7_combined/**
+!outputs/models/tfidf_lit_academic_poetry/
+!outputs/models/tfidf_lit_academic_poetry/**
+!outputs/models/ensemble_lit_academic_poetry_step7_deberta_raw_tfidf/
+!outputs/models/ensemble_lit_academic_poetry_step7_deberta_raw_tfidf/**
+!outputs/models/ensemble_lit_academic_poetry_fine/
+!outputs/models/ensemble_lit_academic_poetry_fine/**
+!outputs/figures/
+!outputs/figures/publication/
+!outputs/figures/publication/**
 
 # Hugging Face / Transformers caches
 .cache/

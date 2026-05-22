@@ -1,4 +1,4 @@
-# LLM Text Detector
+﻿# LLM Text Detector
 
 Hybrid DeBERTa-TFIDF detector for an NLG course project. The task is to decide
 whether an English passage is human-written or generated / rewritten by an LLM.
@@ -61,10 +61,12 @@ improved the held-out exact unsafe probe from `2/35` blocked candidates to
 `28/35`, but its frozen teacher-test rule made zero overrides and tied Step7 at
 `274/300`. The current next route is Round8 unsafe-guard bottleneck repair,
 documented in
-`docs/ROUND7_DETAILED_WORK_RECORD_AND_ROUND8_PLAN_2026-05-22.md`.
+`docs/rounds/round7_detailed_work_record_and_round8_plan_2026-05-22.md`.
 
 TF-IDF, DeBERTa, threshold calibration, comparison, and probability ensemble
-entrypoints are present. Training artifacts are intentionally not committed.
+entrypoints are present. Only the final Step7 inference artifacts are intended
+for version control; non-promoted checkpoints and experiment outputs remain
+local-only.
 
 ## Current Status
 
@@ -93,14 +95,14 @@ Current processed data includes:
 | API | Optional future serving work |
 
 For detailed handoff notes, read `PROJECT_REPORT.md` first. For the second
-round 95% target, read `docs/SECOND_ROUND_95_OPTIMIZATION_PLAN.md`; for the
-executed second-round result, read `docs/ROUND2_RESULTS_SUMMARY.md`; for the
+round 95% target, read `docs/rounds/round2_95_optimization_plan_2026-05-21.md`; for the
+executed second-round result, read `docs/rounds/round2_results_summary_2026-05-22.md`; for the
 third-round OOF and precision-guard result, read
-`docs/ROUND3_RESULTS_SUMMARY.md`. For the later residual-repair sequence, read
-`docs/ROUND4_V1_SUMMARY_AND_ROUND5_PLAN_2026-05-22.md`,
-`docs/ROUND5_FINAL_DECISION_2026-05-22.md`, and
-`docs/ROUND7_DETAILED_WORK_RECORD_AND_ROUND8_PLAN_2026-05-22.md`. Older
-drafts, plans, and full work logs are preserved in `docs/archive/`.
+`docs/rounds/round3_results_summary_2026-05-22.md`. For the later residual-repair sequence, read
+`docs/rounds/round4_v1_summary_and_round5_plan_2026-05-22.md`,
+`docs/rounds/round5_final_decision_2026-05-22.md`, and
+`docs/rounds/round7_detailed_work_record_and_round8_plan_2026-05-22.md`. Older
+drafts, plans, and full work logs are preserved in `docs/rounds/`.
 
 ## Repository Layout
 
@@ -110,19 +112,12 @@ drafts, plans, and full work logs are preserved in `docs/archive/`.
 |   |-- raw/                 # Raw external caches ignored, teacher_test.json tracked
 |   `-- processed/           # Tracked processed JSONL datasets and reports
 |-- outputs/
-|   |-- figures/             # Ignored generated figures
-|   |-- models/              # Ignored trained artifacts
-|   `-- predictions/         # Ignored prediction outputs
+|   |-- figures/             # Publication figures selected for tracking
+|   |-- models/              # Final Step7 inference artifacts tracked via LFS
+|   `-- predictions/         # Generated prediction outputs ignored
 |-- docs/
-|   |-- SECOND_ROUND_95_OPTIMIZATION_PLAN.md
-|   |-- ROUND2_POSTMORTEM_AND_ROUND3_PLAN.md
-|   |-- ROUND3_RESULTS_SUMMARY.md
-|   |-- ROUND4_V1_SUMMARY_AND_ROUND5_PLAN_2026-05-22.md
-|   |-- ROUND5_FINAL_DECISION_2026-05-22.md
-|   |-- ROUND6_DETAILED_WORK_RECORD_AND_ROUND7_PLAN_2026-05-22.md
-|   |-- ROUND7_FINAL_DECISION_2026-05-22.md
-|   |-- ROUND7_DETAILED_WORK_RECORD_AND_ROUND8_PLAN_2026-05-22.md
-|   `-- archive/             # Preserved historical markdown drafts and logs
+|   |-- final/               # Final model card and file manifest
+|   `-- rounds/              # Normalized round-by-round plans, logs, results
 |-- src/
 |   |-- app/                 # Future FastAPI app
 |   |-- data/                # Data collection, prompt, rewrite, QC, split scripts
@@ -135,9 +130,9 @@ drafts, plans, and full work logs are preserved in `docs/archive/`.
 ```
 
 `data/processed/` and `data/raw/teacher_test.json` are tracked so the project
-can be reproduced from the repository. Large raw external caches under
-`data/raw/external_*`, `outputs/`, `.env`, `.venv/`, and local IDE files are
-intentionally ignored by Git.
+can be reproduced from the repository. Large raw external caches, non-final
+model checkpoints, prediction dumps, reports, slides, `.env`, `.venv/`, and
+local IDE files are intentionally ignored by Git.
 
 ## Setup
 
@@ -398,7 +393,7 @@ PROJECT_REPORT.md
 
 1. Use `PROJECT_REPORT.md` as the single report-facing summary.
 2. If further accuracy is needed, continue from the Round8 route in
-   `docs/ROUND7_DETAILED_WORK_RECORD_AND_ROUND8_PLAN_2026-05-22.md`: audit the
+   `docs/rounds/round7_detailed_work_record_and_round8_plan_2026-05-22.md`: audit the
    unsafe-guard bottleneck, build exact-candidate calibration data, and promote
    to teacher-test only after non-teacher gates pass.
 3. Add API serving only if required by the final submission format.

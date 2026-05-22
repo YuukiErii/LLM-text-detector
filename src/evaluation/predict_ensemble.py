@@ -28,8 +28,8 @@ DEFAULT_SUBMISSION_PATH = PROJECT_ROOT / "outputs" / "predictions" / "teacher_te
 DEFAULT_METRICS_PATH = PROJECT_ROOT / "outputs" / "predictions" / "teacher_test_ensemble_metrics.json"
 
 DEFAULT_TFIDF_DIR = PROJECT_ROOT / "outputs" / "models" / "tfidf_lit_academic_poetry"
-DEFAULT_DEBERTA_DIR = PROJECT_ROOT / "outputs" / "models" / "deberta_lit_academic_poetry"
-DEFAULT_FUSION_CONFIG = PROJECT_ROOT / "outputs" / "models" / "ensemble_lit_academic_poetry_fine" / "fusion_config.json"
+DEFAULT_DEBERTA_DIR = PROJECT_ROOT / "outputs" / "models" / "deberta_lit_academic_poetry_step7_combined"
+DEFAULT_FUSION_CONFIG = PROJECT_ROOT / "outputs" / "models" / "ensemble_lit_academic_poetry_step7_deberta_raw_tfidf" / "fusion_config.json"
 
 
 def load_records(path: Path) -> List[Dict]:

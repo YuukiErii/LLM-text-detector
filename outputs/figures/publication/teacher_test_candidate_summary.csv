@@ -1,0 +1,13 @@
+system,round,correct,accuracy,precision,recall,f1,fp,fn,decision
+Original final ensemble,Round1,271,0.9033,0.8712,0.9467,0.9073,21,8,baseline
+Step7 final baseline,Round1 Step7,274,0.9133,0.9133,0.9133,0.9133,13,13,promoted
+Round2 bucket router,Round2,270,0.9,0.8846,0.92,0.902,18,12,rejected
+Round2 stacker,Round2,273,0.91,0.902,0.92,0.9109,15,12,rejected
+Round2 RoBERTa,Round2,248,0.8267,0.8451,0.8,0.8219,22,30,rejected
+Round2 stacker + RoBERTa,Round2,266,0.8867,0.8537,0.9333,0.8917,24,10,rejected
+Round3 ELECTRA,Round3,264,0.88,0.9071,0.8467,0.8759,13,23,rejected
+Round3 OOF stacker,Round3,271,0.9033,0.9353,0.8667,0.8997,9,20,rejected
+Round3 precision guard,Round3,273,0.91,0.9073,0.9133,0.9103,14,13,rejected
+Round4 residual DeBERTa,Round4,263,0.8767,0.8553,0.9067,0.8803,23,14,rejected
+Round5 flip guard,Round5,274,0.9133,0.9133,0.9133,0.9133,13,13,tie
+Round7 exact selector,Round7,274,0.9133,0.9133,0.9133,0.9133,13,13,tie

@@ -1,0 +1,41 @@
+{
+  "valid": {
+    "accuracy": 0.9623842592592593,
+    "precision": 0.961038961038961,
+    "recall": 0.9621749408983451,
+    "f1": 0.9616066154754873,
+    "threshold": 0.5,
+    "roc_auc": 0.9932897508885351
+  },
+  "internal_test": {
+    "accuracy": 0.9584055459272097,
+    "precision": 0.9607609988109393,
+    "recall": 0.9539551357733176,
+    "f1": 0.957345971563981,
+    "threshold": 0.5,
+    "roc_auc": 0.9908954681681955
+  },
+  "config": {
+    "train": "data\\processed\\lit_academic_poetry_train_hardneg_p50_chatgpt_hardpos_poetry_expansion.jsonl",
+    "valid": "data\\processed\\lit_academic_poetry_valid.jsonl",
+    "test": "data\\processed\\lit_academic_poetry_internal_test.jsonl",
+    "output_dir": "outputs\\models\\deberta_lit_academic_poetry_step7_combined",
+    "model_name": "microsoft/deberta-v3-base",
+    "max_length": 512,
+    "epochs": 3.0,
+    "batch_size": 4,
+    "eval_batch_size": 8,
+    "learning_rate": 1e-05,
+    "weight_decay": 0.01,
+    "warmup_ratio": 0.1,
+    "max_grad_norm": 1.0,
+    "optim": "adamw_torch",
+    "gradient_accumulation_steps": 2,
+    "fp16": false,
+    "bf16": false,
+    "seed": 42,
+    "save_total_limit": 2,
+    "early_stopping_patience": 2,
+    "threshold": 0.5
+  }
+}

@@ -1,0 +1,341 @@
+{
+  "inputs": {
+    "step7_predictions": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\outputs\\predictions\\residual_candidate_pool_v1_step7_predictions.jsonl",
+    "teacher_test_exact_text_exclusion_only": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\raw\\teacher_test.json"
+  },
+  "outputs": {
+    "selected": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\residual_selected_v1.jsonl",
+    "train": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\residual_train_v1.jsonl",
+    "dev": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\residual_dev_v1.jsonl",
+    "probe": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\residual_probe_v1.jsonl",
+    "report": "C:\\Users\\Mahiru\\Desktop\\ERII\\PKU\\Semester8\\NLG\\Project\\llm_text_detector\\data\\processed\\residual_split_v1_report.json"
+  },
+  "threshold_policy": {
+    "hard_human": "label=0 and p_step7>=0.55",
+    "very_hard_human": "label=0 and p_step7>=0.65",
+    "hard_llm": "label=1 and p_step7<=0.45",
+    "very_hard_llm": "label=1 and p_step7<=0.35",
+    "ambiguous": "0.35<=p_step7<=0.65",
+    "support_policy": "fill remaining target counts by hardness score from the same non-teacher candidate pool"
+  },
+  "target_counts": {
+    "train": {
+      "0": 1200,
+      "1": 1800
+    },
+    "dev": {
+      "0": 400,
+      "1": 400
+    },
+    "probe": {
+      "0": 200,
+      "1": 200
+    }
+  },
+  "selection": {
+    "target_counts": {
+      "0": 1800,
+      "1": 2400
+    },
+    "selected_counts": {
+      "0": 1890,
+      "1": 2400
+    },
+    "selected_groups": 2489
+  },
+  "summaries": {
+    "all_scored_candidates": {
+      "num_rows": 7651,
+      "num_groups": 5224,
+      "label_distribution": {
+        "0": 4040,
+        "1": 3611
+      },
+      "selection_tier_distribution": {
+        "ambiguous_human_support": 68,
+        "ambiguous_llm_support": 203,
+        "hard_human_fp": 37,
+        "hard_llm_fn": 99,
+        "human_support": 3882,
+        "llm_support": 2451,
+        "very_hard_human_fp": 53,
+        "very_hard_llm_fn": 858
+      },
+      "round8_bucket_distribution": {
+        "human_archaic_prose": 411,
+        "human_classical_poetry": 372,
+        "human_formal_academic": 1010,
+        "human_free_verse": 577,
+        "human_literary_short_fragment": 300,
+        "human_old_fiction_dialogue": 287,
+        "human_polished_literary_prose": 1074,
+        "human_structured_explanatory": 9,
+        "llm_academic_term_preserving_paraphrase": 945,
+        "llm_archaic_poetry_rewrite": 1166,
+        "llm_conservative_chatgpt_paraphrase": 151,
+        "llm_high_jaccard_rewrite": 87,
+        "llm_human_like_formal_paraphrase": 494,
+        "llm_low_temperature_minimal_rewrite": 150,
+        "llm_old_fiction_style_rewrite": 296,
+        "llm_style_preserving_dialogue_rewrite": 322
+      },
+      "round8_family_distribution": {
+        "human_hard_negative": 4040,
+        "llm_hard_positive": 3611
+      },
+      "domain_distribution": {
+        "academic": 2110,
+        "literature": 3493,
+        "poetry": 2048
+      },
+      "generator_distribution": {
+        "chatgpt": 2390,
+        "deepseek": 667,
+        "doubao": 250,
+        "gemini": 304,
+        "human": 4040
+      },
+      "step7_error_rows": 1114,
+      "ambiguous_zone_rows": 407,
+      "core_hard_rows": 1047
+    },
+    "selected": {
+      "num_rows": 4290,
+      "num_groups": 2489,
+      "label_distribution": {
+        "0": 1890,
+        "1": 2400
+      },
+      "selection_tier_distribution": {
+        "ambiguous_human_support": 68,
+        "ambiguous_llm_support": 203,
+        "hard_human_fp": 37,
+        "hard_llm_fn": 99,
+        "human_support": 1732,
+        "llm_support": 1240,
+        "very_hard_human_fp": 53,
+        "very_hard_llm_fn": 858
+      },
+      "round8_bucket_distribution": {
+        "human_archaic_prose": 252,
+        "human_classical_poetry": 227,
+        "human_formal_academic": 550,
+        "human_free_verse": 378,
+        "human_literary_short_fragment": 82,
+        "human_old_fiction_dialogue": 203,
+        "human_polished_literary_prose": 196,
+        "human_structured_explanatory": 2,
+        "llm_academic_term_preserving_paraphrase": 578,
+        "llm_archaic_poetry_rewrite": 921,
+        "llm_conservative_chatgpt_paraphrase": 85,
+        "llm_high_jaccard_rewrite": 87,
+        "llm_human_like_formal_paraphrase": 65,
+        "llm_low_temperature_minimal_rewrite": 140,
+        "llm_old_fiction_style_rewrite": 275,
+        "llm_style_preserving_dialogue_rewrite": 249
+      },
+      "round8_family_distribution": {
+        "human_hard_negative": 1890,
+        "llm_hard_positive": 2400
+      },
+      "domain_distribution": {
+        "academic": 1210,
+        "literature": 1608,
+        "poetry": 1472
+      },
+      "generator_distribution": {
+        "chatgpt": 2098,
+        "deepseek": 183,
+        "doubao": 43,
+        "gemini": 76,
+        "human": 1890
+      },
+      "step7_error_rows": 1114,
+      "ambiguous_zone_rows": 407,
+      "core_hard_rows": 1047
+    },
+    "train": {
+      "num_rows": 3064,
+      "num_groups": 1708,
+      "label_distribution": {
+        "0": 1264,
+        "1": 1800
+      },
+      "selection_tier_distribution": {
+        "ambiguous_human_support": 32,
+        "ambiguous_llm_support": 187,
+        "hard_human_fp": 20,
+        "hard_llm_fn": 81,
+        "human_support": 1204,
+        "llm_support": 1178,
+        "very_hard_human_fp": 8,
+        "very_hard_llm_fn": 354
+      },
+      "round8_bucket_distribution": {
+        "human_archaic_prose": 156,
+        "human_classical_poetry": 129,
+        "human_formal_academic": 439,
+        "human_free_verse": 250,
+        "human_literary_short_fragment": 61,
+        "human_old_fiction_dialogue": 100,
+        "human_polished_literary_prose": 129,
+        "llm_academic_term_preserving_paraphrase": 567,
+        "llm_archaic_poetry_rewrite": 586,
+        "llm_conservative_chatgpt_paraphrase": 81,
+        "llm_high_jaccard_rewrite": 59,
+        "llm_human_like_formal_paraphrase": 64,
+        "llm_low_temperature_minimal_rewrite": 102,
+        "llm_old_fiction_style_rewrite": 179,
+        "llm_style_preserving_dialogue_rewrite": 162
+      },
+      "round8_family_distribution": {
+        "human_hard_negative": 1264,
+        "llm_hard_positive": 1800
+      },
+      "domain_distribution": {
+        "academic": 1066,
+        "literature": 1063,
+        "poetry": 935
+      },
+      "generator_distribution": {
+        "chatgpt": 1503,
+        "deepseek": 179,
+        "doubao": 43,
+        "gemini": 75,
+        "human": 1264
+      },
+      "step7_error_rows": 523,
+      "ambiguous_zone_rows": 320,
+      "core_hard_rows": 463
+    },
+    "dev": {
+      "num_rows": 800,
+      "num_groups": 504,
+      "label_distribution": {
+        "0": 400,
+        "1": 400
+      },
+      "selection_tier_distribution": {
+        "ambiguous_human_support": 4,
+        "ambiguous_llm_support": 10,
+        "hard_human_fp": 2,
+        "hard_llm_fn": 12,
+        "human_support": 378,
+        "llm_support": 41,
+        "very_hard_human_fp": 16,
+        "very_hard_llm_fn": 337
+      },
+      "round8_bucket_distribution": {
+        "human_archaic_prose": 55,
+        "human_classical_poetry": 67,
+        "human_formal_academic": 79,
+        "human_free_verse": 80,
+        "human_literary_short_fragment": 12,
+        "human_old_fiction_dialogue": 60,
+        "human_polished_literary_prose": 46,
+        "human_structured_explanatory": 1,
+        "llm_academic_term_preserving_paraphrase": 9,
+        "llm_archaic_poetry_rewrite": 231,
+        "llm_conservative_chatgpt_paraphrase": 3,
+        "llm_high_jaccard_rewrite": 17,
+        "llm_human_like_formal_paraphrase": 1,
+        "llm_low_temperature_minimal_rewrite": 21,
+        "llm_old_fiction_style_rewrite": 63,
+        "llm_style_preserving_dialogue_rewrite": 55
+      },
+      "round8_family_distribution": {
+        "human_hard_negative": 400,
+        "llm_hard_positive": 400
+      },
+      "domain_distribution": {
+        "academic": 104,
+        "literature": 333,
+        "poetry": 363
+      },
+      "generator_distribution": {
+        "chatgpt": 396,
+        "deepseek": 3,
+        "gemini": 1,
+        "human": 400
+      },
+      "step7_error_rows": 370,
+      "ambiguous_zone_rows": 28,
+      "core_hard_rows": 367
+    },
+    "probe": {
+      "num_rows": 426,
+      "num_groups": 277,
+      "label_distribution": {
+        "0": 226,
+        "1": 200
+      },
+      "selection_tier_distribution": {
+        "ambiguous_human_support": 32,
+        "ambiguous_llm_support": 6,
+        "hard_human_fp": 15,
+        "hard_llm_fn": 6,
+        "human_support": 150,
+        "llm_support": 21,
+        "very_hard_human_fp": 29,
+        "very_hard_llm_fn": 167
+      },
+      "round8_bucket_distribution": {
+        "human_archaic_prose": 41,
+        "human_classical_poetry": 31,
+        "human_formal_academic": 32,
+        "human_free_verse": 48,
+        "human_literary_short_fragment": 9,
+        "human_old_fiction_dialogue": 43,
+        "human_polished_literary_prose": 21,
+        "human_structured_explanatory": 1,
+        "llm_academic_term_preserving_paraphrase": 2,
+        "llm_archaic_poetry_rewrite": 104,
+        "llm_conservative_chatgpt_paraphrase": 1,
+        "llm_high_jaccard_rewrite": 11,
+        "llm_low_temperature_minimal_rewrite": 17,
+        "llm_old_fiction_style_rewrite": 33,
+        "llm_style_preserving_dialogue_rewrite": 32
+      },
+      "round8_family_distribution": {
+        "human_hard_negative": 226,
+        "llm_hard_positive": 200
+      },
+      "domain_distribution": {
+        "academic": 40,
+        "literature": 212,
+        "poetry": 174
+      },
+      "generator_distribution": {
+        "chatgpt": 199,
+        "deepseek": 1,
+        "human": 226
+      },
+      "step7_error_rows": 221,
+      "ambiguous_zone_rows": 59,
+      "core_hard_rows": 217
+    }
+  },
+  "leakage": {
+    "train_dev_group_overlap": 0,
+    "train_dev_text_overlap": 0,
+    "train_probe_group_overlap": 0,
+    "train_probe_text_overlap": 0,
+    "dev_probe_group_overlap": 0,
+    "dev_probe_text_overlap": 0,
+    "teacher_exact_text_duplicates": 0
+  },
+  "acceptance": {
+    "checks": {
+      "train_size_in_recommended_range": true,
+      "dev_size_in_recommended_range": true,
+      "probe_size_in_recommended_range": true,
+      "train_min_label_share_at_least_35pct": true,
+      "dev_min_label_share_at_least_45pct": true,
+      "probe_min_label_share_at_least_45pct": true,
+      "no_split_group_overlap": true,
+      "no_split_text_overlap": true,
+      "teacher_exact_duplicate_zero": true
+    },
+    "ready_for_residual_mix_train_build": true
+  }
+}

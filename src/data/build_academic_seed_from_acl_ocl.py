@@ -47,7 +47,7 @@ BAD_SECTIONS = [
     "acknowledgements",
     "acknowledgments",
     "appendix",
-    "related work",  # 可保留也可过滤；这里先过滤一部分模板化内容
+    "related work",  # Can be kept or filtered; filter part of the template-like content here.
 ]
 
 
@@ -114,7 +114,7 @@ def find_data_files(root: Path) -> List[Path]:
     for pattern in patterns:
         files.extend(root.rglob(pattern))
 
-    # 去掉 README / metadata 类文件
+    # Remove README / metadata-like files.
     files = [
         p for p in files
         if "README" not in p.name.upper()
@@ -162,7 +162,7 @@ def is_valid_academic_paragraph(text: str, section: Optional[str]) -> bool:
     if wc > 320:
         return False
 
-    # 过滤公式、表格、参考文献味道很重的段落
+    # Filter paragraphs that look strongly like formulas, tables, or references.
     lower = text.lower()
 
     bad_patterns = [
@@ -179,8 +179,8 @@ def is_valid_academic_paragraph(text: str, section: Optional[str]) -> bool:
         "et al.",
     ]
 
-    # et al. 在论文里常见，不一定要强过滤；如果太严格可以删掉这一项。
-    # 这里不直接过滤 et al.，下面只过滤明显 reference-like 结构。
+    # "et al." is common in papers, so do not over-filter it.
+    # Only clear reference-like structures are filtered below.
     bad_patterns = [
         "http://",
         "https://",
@@ -193,12 +193,12 @@ def is_valid_academic_paragraph(text: str, section: Optional[str]) -> bool:
     if any(p in lower for p in bad_patterns):
         return False
 
-    # 太多数字/符号，可能是表格或公式
+    # Too many digits or symbols usually indicate tables or formulas.
     digit_ratio = sum(ch.isdigit() for ch in text) / max(len(text), 1)
     if digit_ratio > 0.12:
         return False
 
-    # 最好包含 NLP/CL 相关关键词，让训练集更贴近老师测试集里的 academic 段落
+    # Prefer NLP/CL keywords so the training seed is closer to academic teacher-test prose.
     if not has_keyword(text):
         return False
 
@@ -354,7 +354,7 @@ def main():
                 for paragraph in extract_body_paragraphs(record):
                     text = paragraph["text"]
 
-                    # 简单去重
+                    # Simple deduplication.
                     key = text[:300].lower()
                     if key in seen_texts:
                         continue
