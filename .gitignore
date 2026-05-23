@@ -114,6 +114,10 @@ build/
 dist/
 *.egg-info/
 .eggs/
+*.zip
+
+# Local one-off Node/presentation tooling metadata
+/package.json
 
 # Local notebooks/checkpoints
 .ipynb_checkpoints/
